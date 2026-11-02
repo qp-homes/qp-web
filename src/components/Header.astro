@@ -569,6 +569,7 @@ const inSection = (href: string) =>
         if (label) label.textContent = open ? 'Close menu' : 'Open menu';
         document.querySelector('main')?.toggleAttribute('inert', open);
         document.querySelector('[data-footer]')?.toggleAttribute('inert', open);
+        document.querySelector('[data-mobile-bar]')?.toggleAttribute('inert', open);
       };
       mBtn.addEventListener('click', () => setOpen(Boolean(mNav.hidden)));
       document.addEventListener('keydown', (e) => {

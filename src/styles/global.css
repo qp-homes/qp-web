@@ -144,9 +144,10 @@ ol[role='list'] {
 }
 
 :focus-visible {
-  outline: 3px solid var(--sky);
+  outline: 3px solid var(--ink);
   outline-offset: 3px;
   border-radius: 2px;
+  box-shadow: 0 0 0 6px var(--on-dark);
 }
 
 ::selection {
