@@ -1,0 +1,348 @@
+---
+// Design prototype of the Home ("After Hours"). Noindex; the live Home is index.astro.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AfterHoursScene from '../components/AfterHoursScene.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import Process from '../components/Process.astro';
+import Faq from '../components/Faq.astro';
+import { photos } from '../data/photos';
+import { site, primaryCta } from '../data/site';
+import { primaryServices, supportServices, serviceHref } from '../data/services';
+import { laCountyCities } from '../data/areas';
+
+const headline = 'Professional Commercial Cleaning Services in Los Angeles';
+
+const commitments = [
+  {
+    title: 'Owner-level oversight',
+    text: `Quality Plus is led by its founder, ${site.founder}, who stays close to daily operations and to the clients the team serves.`,
+  },
+  {
+    title: 'A plan for each facility',
+    text: 'Scope, frequency, and priorities are written for your property after we see it — not pulled from a generic checklist.',
+  },
+  {
+    title: 'Consistent communication',
+    text: 'You know who to call. Requests, schedule changes, and follow-ups go to a real person who knows your account.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Can cleaning happen outside our business hours?',
+    a: 'Schedules are set around your operating hours and building rules. We confirm the service window and access during the walkthrough.',
+  },
+  {
+    q: 'Can we request a walkthrough before getting a proposal?',
+    a: 'Yes — that is how every new account starts. We visit your facility, review the scope and access, and then prepare a written proposal.',
+  },
+  {
+    q: 'Which service areas do you cover?',
+    a: 'Los Angeles County is our primary service area. We also review projects in Orange County, San Bernardino County, and the San Diego area on a case-by-case basis.',
+  },
+];
+---
+
+<BaseLayout
+  title="After Hours Home Prototype | Quality Plus"
+  description="Design prototype of the Quality Plus Building Services home page."
+  noindex
+  heroOverlay
+>
+  <AfterHoursScene />
+
+  <div class="night">
+    <section class="hero" data-hero>
+      <div class="container hero-content" data-hero-content>
+        <p class="eyebrow">When the building empties</p>
+        <h1>{headline}</h1>
+        <p class="lead">
+          Reliable cleaning solutions for retail stores, medical offices, and commercial buildings, planned around your
+          operating hours and building rules.
+        </p>
+        <div class="btn-row" data-hide-mobile-bar>
+          <a href={primaryCta.href} class="btn" data-magnetic>{primaryCta.label} <Icon name="arrow" /></a>
+          <a href="/commercial-cleaning-services/" class="btn btn--ghost" data-magnetic>Explore Commercial Services</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section chapter" aria-label="Our approach">
+      <div class="container">
+        <p class="statement" data-scrub-words>
+          Your team goes home. The floors, restrooms, and glass still need someone who knows your building. That work
+          starts with a plan written for your facility.
+        </p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="services-title">
+      <div class="container">
+        <div class="narrow">
+          <p class="eyebrow">Core services</p>
+          <h2 id="services-title">Commercial Cleaning Built Around Your Business</h2>
+        </div>
+        <div class="services">
+          {
+            primaryServices.map((s, i) => (
+              <article class="service" aria-labelledby={`v2-${s.slug}`}>
+                <a href={serviceHref(s.slug)} class="service-photo frame" data-clip data-cursor="View" tabindex="-1" aria-hidden="true">
+                  <Photo photo={photos[s.hero]} decorative sizes="(min-width: 64rem) 34vw, 100vw" widths={[480, 800, 1200]} />
+                </a>
+                <div class="service-copy">
+                  <span class="index">0{i + 1}</span>
+                  <h3 id={`v2-${s.slug}`}>{s.name}</h3>
+                  <p>{s.summary}</p>
+                  <a href={serviceHref(s.slug)} class="link">Explore {s.name} <Icon name="arrow" /></a>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+        <ul role="list" class="support">
+          {
+            supportServices.map((s) => (
+              <li>
+                <a href={serviceHref(s.slug)}>{s.name} <Icon name="arrow" /></a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <Process />
+
+    <section class="section" aria-labelledby="why-title">
+      <div class="container narrow">
+        <p class="eyebrow">Why Quality Plus</p>
+        <h2 id="why-title">Experience, Accountability, and Attention to Detail</h2>
+        <ol role="list" class="commitments">
+          {
+            commitments.map((c, i) => (
+              <li data-reveal style={`--d:${i}`}>
+                <span class="index">0{i + 1}</span>
+                <div>
+                  <h3>{c.title}</h3>
+                  <p>{c.text}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+        <a href="/service-areas/los-angeles-county/" class="link">
+          Check {laCountyCities.length} cities in LA County <Icon name="arrow" />
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="sheet"><Faq items={faqs} /></div>
+      </div>
+    </section>
+
+    <section class="dawn" aria-labelledby="dawn-title" data-dawn-end>
+      <div class="container narrow">
+        <p class="eyebrow">Morning</p>
+        <h2 id="dawn-title">Let’s Build a Cleaning Plan for Your Facility</h2>
+        <p class="lead">Share a few details about your property, and we’ll schedule a walkthrough.</p>
+        <div class="btn-row" data-hide-mobile-bar>
+          <a href={primaryCta.href} class="btn" data-magnetic>{primaryCta.label} <Icon name="arrow" /></a>
+          <a href={site.phoneHref} class="btn btn--ghost" data-track="click_to_call"><Icon name="phone" /> {site.phone}</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .night {
+    color: var(--on-dark);
+    --v2-muted: #d3dae2;
+  }
+  .night :global(.eyebrow),
+  .night :global(.index) {
+    color: var(--orange-hover);
+  }
+  .night :global(.lead) {
+    color: var(--v2-muted);
+  }
+  .night :global(.btn--ghost) {
+    --btn-fg: var(--on-dark);
+    border-color: rgb(246 244 239 / 0.55);
+  }
+  .night :global(.btn--ghost:hover) {
+    background: var(--on-dark);
+    color: var(--ink);
+  }
+  .night :global(.link) {
+    color: var(--on-dark);
+  }
+  .night :global(.process.dark) {
+    background: transparent;
+  }
+  .narrow {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+    max-width: 44rem;
+  }
+  .container.narrow {
+    margin-left: max(var(--gutter), calc((100vw - var(--max)) / 2));
+  }
+
+  .hero {
+    min-height: 100svh;
+    display: grid;
+    align-items: center;
+    padding: calc(var(--header-h) + 2rem) 0 3rem;
+  }
+  .hero-content {
+    display: grid;
+    gap: 1.5rem;
+    justify-items: start;
+  }
+  .hero h1 {
+    max-width: 16ch;
+    font-size: clamp(2.3rem, 1.5rem + 3vw, 4.5rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 640;
+    font-variation-settings: 'wdth' 102;
+  }
+  .hero .lead {
+    max-width: 36rem;
+  }
+
+  .chapter {
+    min-height: 80svh;
+    display: grid;
+    align-items: center;
+  }
+  .statement {
+    max-width: 30ch;
+    font-size: clamp(1.55rem, 1.2rem + 1.6vw, 2.6rem);
+    line-height: 1.22;
+    font-weight: 680;
+    letter-spacing: -0.02em;
+    font-variation-settings: 'wdth' 102;
+  }
+
+  .services {
+    display: grid;
+    gap: clamp(3rem, 2rem + 4vw, 6rem);
+    margin-top: clamp(2.5rem, 2rem + 2vw, 4rem);
+  }
+  .service {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .service-photo {
+    display: block;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+  }
+  .service-photo :global(img),
+  .service-photo :global(picture) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .service-copy {
+    display: grid;
+    gap: 0.8rem;
+    justify-items: start;
+    align-content: center;
+  }
+  .service-copy h3 {
+    font-size: var(--step-4);
+  }
+  .service-copy p,
+  .commitments p {
+    color: var(--v2-muted);
+  }
+  @media (min-width: 64rem) {
+    /* Keeps the lit tower on the right visible behind the content. */
+    .services,
+    .support {
+      max-width: 60%;
+    }
+    .service {
+      grid-template-columns: 1.1fr 1fr;
+      gap: 2.5rem;
+    }
+  }
+  .support {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 3.5rem;
+  }
+  .support a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding-inline: 1rem;
+    border: 1px solid rgb(246 244 239 / 0.3);
+    border-radius: 99px;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .support a:hover {
+    border-color: var(--orange);
+  }
+  .support :global(svg) {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .commitments {
+    width: 100%;
+    border-top: 1px solid var(--line-dark);
+  }
+  .commitments li {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--line-dark);
+  }
+  .commitments h3 {
+    font-size: var(--step-1);
+    margin-bottom: 0.35rem;
+  }
+
+  .sheet {
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .sheet :global(.eyebrow),
+  .sheet :global(.index) {
+    color: var(--orange-ink);
+  }
+  .sheet :global(.lead) {
+    color: var(--muted);
+  }
+  .sheet :global(.link) {
+    color: var(--ink);
+  }
+
+  .dawn {
+    min-height: 100svh;
+    display: grid;
+    align-items: center;
+    padding-block: var(--section);
+  }
+  .dawn h2 {
+    font-size: var(--step-5);
+  }
+</style>
+
+<script>
+  import '../scripts/motion';
+</script>

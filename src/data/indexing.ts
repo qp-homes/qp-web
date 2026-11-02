@@ -4,6 +4,7 @@ import { areas } from './areas';
 export const NOINDEX_PATHS = [
   '/thank-you/',
   '/404/',
+  '/home-v2/', // design prototype, not a public page
   ...areas.filter((a) => !a.indexable).map((a) => `/service-areas/${a.slug}/`),
 ];
 

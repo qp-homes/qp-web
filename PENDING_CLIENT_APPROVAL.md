@@ -50,6 +50,8 @@ Leyenda: 🔴 bloquea publicación · 🟠 importante · 🟢 mejora
 | 4.3 🟠 | "Our team works in Quality Plus uniforms" | Visible (respaldado por las fotos) — confirmar que es política |
 | 4.4 🟠 | "We aim to keep the same team on your office", "supervisor checks the work" | Visible — confirmar que es práctica real |
 
+**Prototipo `/home-v2/` (noindex):** el concepto "After Hours" presenta la limpieza fuera de horario como eje de la marca. La web ya la menciona en servicios concretos, pero Karla debe confirmar que representa la operación habitual antes de reemplazar la Home.
+
 ## 5. Testimonios y reseñas
 
 - 🟠 La web antigua mostraba reseñas de Google (Miriam Bustamante, Rebecca Betancourt…) y un widget de estrellas.

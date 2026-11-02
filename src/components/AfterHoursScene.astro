@@ -1,0 +1,197 @@
+---
+/**
+ * Fixed backdrop for the After Hours prototype: one night in a commercial building,
+ * driven by scroll. Decorative only. Without JS or with reduced motion it stays
+ * as a static night scene, so the page content is never affected.
+ */
+const floors = 14;
+const cols = 9;
+const skyline =
+  'M0 110H60V92H84V80H110V96H140V70H158V62H176V70H190V100H230V86H250V54H262V44H274V54H290V88H330V100H360V72H378V60H396V72H410V96H450V40H462V28L468 14L474 28H486V40H500V90H540V66H556V50H574V66H590V98H630V20H640V8H652V20H662V84H700V58H724V100H760V76H790V48L800 36L810 48V82H850V94H880V62H904V70H920V100H960V80H990V66H1010V90H1050V74H1070V96H1110V86H1140V104H1200V120H0Z';
+// Deterministic pattern, so server and client always draw the same windows.
+const lit = (f: number, c: number) => (f * 7 + c * 13) % 5 !== 0;
+---
+
+<div class="scene" data-scene aria-hidden="true">
+  <div class="sky sky-night" data-sky="night"></div>
+  <div class="sky sky-dusk" data-sky="dusk"></div>
+  <div class="sky sky-dawn" data-sky="dawn"></div>
+
+  <svg class="city" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" focusable="false">
+    <path class="far" d={skyline} transform="translate(0 610) scale(1.3334 2.45)"></path>
+    <g class="tower" transform="translate(1000 170)">
+      <rect class="tower-body" width="390" height="730"></rect>
+      <rect class="tower-top" x="145" y="-46" width="100" height="46"></rect>
+      <rect class="tower-top" x="190" y="-110" width="10" height="64"></rect>
+      {
+        Array.from({ length: floors }, (_, f) => {
+          const y = 22 + (floors - 1 - f) * 50;
+          return (
+            <g data-floor={f}>
+              <g class="office" data-office>
+                {Array.from({ length: cols }, (_, c) => lit(f, c) && <rect x={24 + c * 39} y={y} width="26" height="30" />)}
+              </g>
+              <g class="crew" data-crew>
+                {Array.from({ length: cols }, (_, c) => <rect x={24 + c * 39} y={y} width="26" height="30" />)}
+              </g>
+            </g>
+          );
+        })
+      }
+    </g>
+    <path class="near" d={skyline} transform="translate(0 760) scale(1.3334 1.2)"></path>
+  </svg>
+
+  <div class="scrim"></div>
+</div>
+
+<p class="clock" data-clock aria-hidden="true"><span data-clock-time>6:00 PM</span></p>
+
+<style>
+  .scene {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    background: #0d1622;
+  }
+  .sky {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    will-change: opacity;
+  }
+  .sky-dusk {
+    background: linear-gradient(180deg, #14202e 0%, #2b3c58 48%, #8a5a55 76%, #e07a3a 100%);
+  }
+  .sky-night {
+    opacity: 1;
+    background: linear-gradient(180deg, #0a121c 0%, #101c2c 60%, #1b2a3b 100%);
+  }
+  .sky-dawn {
+    background: linear-gradient(180deg, #14202e 0%, #27486a 45%, #b9785a 78%, #f6a15f 100%);
+  }
+  .city {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  /* Narrow screens: centre the tower instead of cropping it away. */
+  @media (max-width: 63.99rem) {
+    .city {
+      inset: 0 auto 0 50%;
+      width: 178svh;
+      max-width: none;
+      transform: translateX(calc(-50% - 44svh));
+    }
+  }
+  .far {
+    fill: #1b2a3b;
+    opacity: 0.8;
+  }
+  .near {
+    fill: #0a121c;
+  }
+  .tower-body {
+    fill: #101a27;
+    stroke: rgb(159 201 239 / 0.3);
+    stroke-width: 1.5;
+  }
+  .tower-top {
+    fill: #101a27;
+  }
+  .office {
+    fill: #f4dfae;
+    opacity: 0.08;
+  }
+  .crew {
+    fill: var(--orange);
+    opacity: 0;
+  }
+  .scrim {
+    position: absolute;
+    inset: 0;
+    background: rgb(10 18 28 / 0.74);
+  }
+  @media (min-width: 64rem) {
+    .scrim {
+      background: linear-gradient(90deg, rgb(10 18 28 / 0.86) 0%, rgb(10 18 28 / 0.68) 48%, rgb(10 18 28 / 0.08) 72%);
+    }
+  }
+  .clock {
+    display: none;
+    position: fixed;
+    right: var(--gutter);
+    bottom: 1.5rem;
+    z-index: 5;
+    padding: 0.35rem 0.8rem;
+    border: 1px solid var(--line-dark);
+    border-radius: 99px;
+    background: rgb(10 18 28 / 0.72);
+    color: var(--on-dark);
+    font-size: var(--step--1);
+    font-weight: 620;
+    font-variant-numeric: tabular-nums;
+  }
+  @media (min-width: 48rem) and (prefers-reduced-motion: no-preference) {
+    :global(.js) .clock {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  const scene = document.querySelector<HTMLElement>('[data-scene]');
+  if (scene && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const clamp = (v: number) => Math.min(1, Math.max(0, v));
+    const range = (p: number, from: number, to: number) => clamp((p - from) / (to - from));
+    const dusk = scene.querySelector<HTMLElement>('[data-sky="dusk"]')!;
+    const dawn = scene.querySelector<HTMLElement>('[data-sky="dawn"]')!;
+    const floors = [...scene.querySelectorAll<SVGGElement>('[data-floor]')].map((floor) => ({
+      index: Number(floor.dataset.floor),
+      office: floor.querySelector<SVGGElement>('[data-office]')!,
+      crew: floor.querySelector<SVGGElement>('[data-crew]')!,
+    }));
+    const clock = document.querySelector<HTMLElement>('[data-clock-time]');
+    const end = document.querySelector<HTMLElement>('[data-dawn-end]');
+    const total = floors.length;
+
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      // The night ends with the closing section; the footer sits past it.
+      const last = end ? end.offsetTop + end.offsetHeight - window.innerHeight : document.body.scrollHeight;
+      const p = clamp(window.scrollY / Math.max(1, last));
+
+      dusk.style.opacity = String(1 - range(p, 0.04, 0.2));
+      dawn.style.opacity = String(range(p, 0.8, 0.98));
+
+      floors.forEach(({ index, office, crew }) => {
+        // Offices go dark as people leave, then the crew climbs floor by floor.
+        const leaving = 1 - range(p, 0.04 + index * 0.008, 0.16 + index * 0.008);
+        const start = 0.2 + (index / total) * 0.56;
+        const pulse = range(p, start, start + 0.03) * (1 - range(p, start + 0.07, start + 0.11));
+        const morning = range(p, 0.84, 0.97);
+        office.style.opacity = String(Math.max(0.08 + leaving * 0.82, morning * 0.8));
+        crew.style.opacity = String(pulse);
+      });
+
+      if (clock) {
+        const minutes = (18 * 60 + Math.round((p * 720) / 5) * 5) % 1440;
+        const h = Math.floor(minutes / 60);
+        clock.textContent = `${h % 12 || 12}:${String(minutes % 60).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`;
+      }
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    window.addEventListener('load', onScroll);
+  }
+</script>
