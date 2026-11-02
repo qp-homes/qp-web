@@ -503,3 +503,8 @@ ol[role='list'] {
 .cursor.has-label .cursor-label {
   opacity: 1;
 }
+
+/* Lenis drives scrolling when motion is active; native smooth scrolling would fight it. */
+html.has-motion {
+  scroll-behavior: auto;
+}

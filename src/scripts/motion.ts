@@ -119,6 +119,17 @@ function horizontalSections(gsap: G, ScrollTrigger: typeof import('gsap/ScrollTr
           onUpdate: (self) => bar && (bar.style.transform = `scaleX(${self.progress})`),
         },
       });
+      // Keyboard: a focused link in an off-screen panel moves the page to that panel,
+      // so focus is never hidden (the pinned section itself cannot scroll: overflow: clip).
+      section.addEventListener('focusin', (e) => {
+        const st = tween.scrollTrigger;
+        const panel = (e.target as Element).closest<HTMLElement>('.panel');
+        if (!st || !panel) return;
+        const max = distance();
+        const left = panel.getBoundingClientRect().left - track.getBoundingClientRect().left;
+        const x = Math.min(max, Math.max(0, left - (window.innerWidth - panel.offsetWidth) / 2));
+        window.scrollTo({ top: st.start + (x / max) * (st.end - st.start), behavior: 'instant' });
+      });
       // Images inside panels drift slightly against the track for depth.
       track.querySelectorAll<HTMLElement>('[data-hscroll-img]').forEach((img) => {
         gsap.fromTo(
