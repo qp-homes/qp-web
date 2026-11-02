@@ -148,21 +148,20 @@ const inSection = (href: string) =>
     top: 0;
     z-index: 50;
     border-bottom: 1px solid transparent;
-    transition: border-color 0.3s;
+    transition:
+      border-color 0.3s,
+      transform 0.45s var(--ease-out);
   }
-  /* Blur lives on a pseudo-element: backdrop-filter on the header itself would
-     become the containing block for the fixed mobile menu and clip it. */
+  .site-header.is-away {
+    transform: translateY(-100%);
+  }
+  /* Opaque so page content never shows through behind the navigation. */
   .site-header::before {
     content: '';
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: rgb(246 244 239 / 0.92);
-  }
-  @supports (backdrop-filter: blur(1px)) {
-    .site-header::before {
-      backdrop-filter: saturate(1.4) blur(12px);
-    }
+    background: var(--paper);
   }
   .site-header.is-scrolled {
     border-color: var(--line);
@@ -175,7 +174,8 @@ const inSection = (href: string) =>
     color: var(--ink);
     transition:
       border-color 0.3s,
-      color 0.35s;
+      color 0.35s,
+      transform 0.45s var(--ease-out);
   }
   .site-header.overlay::before {
     transition: opacity 0.35s;
@@ -221,12 +221,12 @@ const inSection = (href: string) =>
     border-radius: 4px;
   }
   .brand-logo {
-    width: 92px;
+    width: 84px;
     height: auto;
   }
   @media (min-width: 64rem) {
     .brand-logo {
-      width: 108px;
+      width: 92px;
     }
   }
 
@@ -479,9 +479,9 @@ const inSection = (href: string) =>
     display: block;
     padding: 0.55rem 0;
     font-size: var(--step-3);
-    font-weight: 720;
+    font-weight: 640;
     letter-spacing: -0.02em;
-    font-variation-settings: 'wdth' 112;
+    font-variation-settings: 'wdth' 102;
     text-decoration: none;
   }
   .m-main a[aria-current='page'] {
@@ -530,6 +530,23 @@ const inSection = (href: string) =>
       header.classList.toggle('is-scrolled', window.scrollY > 8 || header.classList.contains('menu-open'));
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Step aside while reading down, return on the way up.
+    let lastY = window.scrollY;
+    window.addEventListener(
+      'scroll',
+      () => {
+        const y = window.scrollY;
+        if (Math.abs(y - lastY) < 6) return;
+        const busy =
+          header.classList.contains('menu-open') ||
+          header.contains(document.activeElement) ||
+          header.querySelector('[data-menu-toggle][aria-expanded="true"]');
+        header.classList.toggle('is-away', y > lastY && y > 200 && !busy);
+        lastY = y;
+      },
+      { passive: true },
+    );
 
     // Desktop services menu (disclosure pattern)
     const menu = header.querySelector<HTMLElement>('[data-menu]');

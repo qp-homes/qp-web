@@ -9,6 +9,7 @@
  *   [data-hero]          hero: background drifts, content eases out on scroll
  *   [data-scrub-words]   statement text lights up word by word while scrolling
  *   [data-hscroll]       section pins and its [data-hscroll-track] scrolls sideways (desktop)
+ *   main h2              headings rise word by word when they enter
  *   [data-clip]          image frame reveals with a clip + scale when it enters
  *   [data-magnetic]      element leans toward the pointer (fine pointers only)
  *   [data-cursor="Text"] custom cursor shows a label over the element (fine pointers only)
@@ -50,6 +51,7 @@ async function init() {
 
   heroMotion(gsap);
   scrubWords(gsap);
+  headingReveals(gsap);
   horizontalSections(gsap, ScrollTrigger);
   clipReveals(gsap);
   if (finePointer.matches) {
@@ -94,6 +96,22 @@ function scrubWords(gsap: G) {
         scrollTrigger: { trigger: el, start: 'top 80%', end: 'bottom 45%', scrub: true },
       },
     );
+  });
+}
+
+function headingReveals(gsap: G) {
+  document.querySelectorAll<HTMLElement>('main h2').forEach((el) => {
+    const text = el.textContent!.trim();
+    const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    const words = text.split(/\s+/).map((w) => `<span class="hw"><span>${esc(w)}</span></span>`).join(' ');
+    el.innerHTML = `<span class="visually-hidden">${esc(text)}</span><span aria-hidden="true">${words}</span>`;
+    gsap.from(el.querySelectorAll('.hw > span'), {
+      yPercent: 110,
+      duration: 0.9,
+      stagger: 0.035,
+      ease: 'expo.out',
+      scrollTrigger: { trigger: el, start: 'top 90%', once: true },
+    });
   });
 }
 

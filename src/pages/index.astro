@@ -16,10 +16,10 @@ const headline = 'Professional Commercial Cleaning Services in Los Angeles';
 
 // Full-bleed hero sequence. First slide is the LCP image.
 const heroSlides: { key: PhotoKey; position: string }[] = [
-  { key: 'twoMembersMopping', position: '50% 62%' },
+  { key: 'cartSmiling', position: '50% 20%' },
   { key: 'powerWashPatio', position: '50% 55%' },
   { key: 'storefrontGlass', position: '50% 35%' },
-  { key: 'teamGroup', position: '50% 30%' },
+  { key: 'twoMembersMopping', position: '60% 60%' },
 ];
 
 const commitments = [
@@ -327,10 +327,10 @@ const ticker = services.map((s) => s.name);
   /* ================= Hero ================= */
   .hero {
     position: relative;
-    min-height: 100svh;
+    min-height: calc(100svh - 3rem); /* leaves the ticker in view */
     display: grid;
     align-items: end;
-    padding: calc(var(--header-h) + 3rem) 0 clamp(2.5rem, 2rem + 3vw, 4.5rem);
+    padding: calc(var(--header-h) + 2rem) 0 clamp(4.5rem, 3.5rem + 4vw, 7rem);
     background: var(--ink);
     color: var(--on-dark);
     overflow: hidden;
@@ -394,7 +394,31 @@ const ticker = services.map((s) => s.name);
     z-index: -1;
     background:
       linear-gradient(180deg, rgb(20 32 46 / 0.7) 0%, rgb(20 32 46 / 0.2) 32%, rgb(20 32 46 / 0.55) 62%, rgb(20 32 46 / 0.96) 100%),
-      linear-gradient(90deg, rgb(20 32 46 / 0.75) 0%, rgb(20 32 46 / 0) 70%);
+      linear-gradient(90deg, rgb(20 32 46 / 0.9) 0%, rgb(20 32 46 / 0.55) 45%, rgb(20 32 46 / 0) 80%);
+  }
+  /* Desktop: the photos are portrait, so they fill the right side at full sharpness
+     and melt into the ink background instead of being blown up across the screen. */
+  @media (min-width: 64rem) {
+    .hero-bg {
+      left: auto;
+      width: 50%;
+    }
+    .hero-shade {
+      background:
+        linear-gradient(90deg, var(--ink) 50%, rgb(20 32 46 / 0.35) 68%, rgb(20 32 46 / 0) 85%),
+        linear-gradient(180deg, rgb(20 32 46 / 0.85) 0%, rgb(20 32 46 / 0) 24%, rgb(20 32 46 / 0) 70%, var(--ink) 100%);
+    }
+    .hero-content h1,
+    .hero-foot {
+      max-width: 44%;
+    }
+    .hero-foot {
+      grid-template-columns: 1fr !important;
+      justify-content: start !important;
+    }
+    .hero .btn-row {
+      flex-wrap: wrap;
+    }
   }
   .hero-content {
     display: grid;
@@ -404,12 +428,12 @@ const ticker = services.map((s) => s.name);
     color: var(--orange);
   }
   .hero h1 {
-    font-size: clamp(2.7rem, 1.2rem + 6.2vw, 7.6rem);
-    line-height: 0.92;
-    letter-spacing: -0.045em;
-    max-width: 13ch;
-    font-variation-settings: 'wdth' 118;
-    font-weight: 780;
+    font-size: clamp(2.2rem, min(1.2rem + 3.2vw, 8vh), 4.5rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    max-width: 19ch;
+    font-variation-settings: 'wdth' 102;
+    font-weight: 640;
   }
   .w {
     display: inline-block;
@@ -532,19 +556,19 @@ const ticker = services.map((s) => s.name);
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 5.5rem;
-    height: clamp(4rem, 3rem + 6vw, 10rem);
+    bottom: 0;
+    height: clamp(3rem, 2.5rem + 3vw, 5.5rem);
     z-index: -1;
-    opacity: 0.6;
+    opacity: 0.7;
   }
 
   /* ================= Ticker ================= */
   .ticker {
     overflow: hidden;
-    background: var(--orange);
-    color: var(--ink);
-    padding-block: 0.95rem;
-    border-block: 1px solid rgb(20 32 46 / 0.15);
+    background: var(--ink);
+    color: var(--on-dark-muted);
+    padding-block: 0.8rem;
+    border-top: 1px solid var(--line-dark);
   }
   .ticker-track {
     display: flex;
@@ -564,14 +588,19 @@ const ticker = services.map((s) => s.name);
     gap: 1.6rem;
     padding-right: 1.6rem;
     font-size: var(--step-1);
-    font-weight: 700;
+    font-weight: 640;
     letter-spacing: -0.01em;
-    font-variation-settings: 'wdth' 115;
+    font-variation-settings: 'wdth' 102;
     white-space: nowrap;
+  }
+  .ticker-group > span {
+    font-size: var(--step--1);
+    font-weight: 500;
   }
   .ticker i {
     font-style: normal;
     font-size: 0.7em;
+    color: var(--orange);
   }
   @keyframes marquee {
     to {
@@ -585,13 +614,13 @@ const ticker = services.map((s) => s.name);
     gap: 2rem;
   }
   .statement {
-    font-size: clamp(1.9rem, 1.1rem + 3.4vw, 4.6rem);
-    line-height: 1.08;
+    font-size: clamp(1.55rem, 1.2rem + 1.6vw, 2.6rem);
+    line-height: 1.22;
     font-weight: 680;
-    letter-spacing: -0.035em;
-    font-variation-settings: 'wdth' 112;
-    max-width: 22ch;
-    text-wrap: balance;
+    letter-spacing: -0.02em;
+    font-variation-settings: 'wdth' 102;
+    max-width: 34ch;
+    text-wrap: pretty;
   }
   .statement :global(.sw) {
     display: inline;
@@ -615,7 +644,7 @@ const ticker = services.map((s) => s.name);
     align-content: center;
   }
   .svc-intro h2 {
-    font-size: clamp(2.2rem, 1.6rem + 2.8vw, 4.4rem);
+    font-size: var(--step-5);
   }
   .hint {
     display: none;
@@ -655,7 +684,7 @@ const ticker = services.map((s) => s.name);
     justify-items: start;
   }
   .svc-num {
-    font-size: clamp(3.5rem, 2rem + 6vw, 8rem);
+    font-size: clamp(2.5rem, 2rem + 2vw, 4rem);
     line-height: 0.8;
     font-weight: 800;
     font-variation-settings: 'wdth' 125;
@@ -663,7 +692,7 @@ const ticker = services.map((s) => s.name);
     -webkit-text-stroke: 1.5px rgb(64 148 220 / 0.85);
   }
   .svc-copy h3 {
-    font-size: clamp(2rem, 1.4rem + 2.4vw, 3.6rem);
+    font-size: clamp(1.7rem, 1.45rem + 1.1vw, 2.5rem);
   }
   .svc-sum {
     font-size: var(--step-1);
@@ -685,10 +714,10 @@ const ticker = services.map((s) => s.name);
   }
   .end-title {
     font-size: var(--step-3);
-    font-weight: 740;
+    font-weight: 640;
     line-height: 1.05;
     letter-spacing: -0.02em;
-    font-variation-settings: 'wdth' 112;
+    font-variation-settings: 'wdth' 102;
     max-width: 14ch;
   }
   .svc-end .link {
@@ -866,6 +895,7 @@ const ticker = services.map((s) => s.name);
 
   /* ================= Coverage ================= */
   .coverage {
+    padding-bottom: calc(var(--section) + 5rem); /* room for the skyline below the list */
     position: relative;
     overflow: hidden;
     isolation: isolate;
@@ -875,7 +905,7 @@ const ticker = services.map((s) => s.name);
     left: 0;
     right: 0;
     bottom: 0;
-    height: 8rem;
+    height: 5rem;
     z-index: -1;
     opacity: 0.5;
   }
@@ -900,7 +930,7 @@ const ticker = services.map((s) => s.name);
     display: flex;
     align-items: baseline;
     gap: 1rem;
-    font-size: clamp(4rem, 2.5rem + 6vw, 8.5rem);
+    font-size: clamp(3rem, 2.4rem + 2.5vw, 4.75rem);
     line-height: 0.85;
     font-weight: 800;
     letter-spacing: -0.05em;
@@ -930,9 +960,9 @@ const ticker = services.map((s) => s.name);
   .r-name {
     grid-area: name;
     font-size: var(--step-2);
-    font-weight: 720;
+    font-weight: 640;
     letter-spacing: -0.02em;
-    font-variation-settings: 'wdth' 112;
+    font-variation-settings: 'wdth' 102;
     transition: transform 0.45s var(--ease-out);
   }
   .r-status {

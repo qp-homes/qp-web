@@ -48,13 +48,13 @@ const { class: className, tone = 'sky', ...rest } = Astro.props;
     stroke: rgb(159 201 239 / 0.55);
   }
   @media (prefers-reduced-motion: no-preference) {
+    /* Wipe, not dash: dash lengths break with non-scaling strokes and stop short of the edge. */
     :global(.js) .skyline path {
-      stroke-dasharray: 1;
-      stroke-dashoffset: 1;
-      transition: stroke-dashoffset 2.6s var(--ease-in-out);
+      clip-path: inset(-10px 100% -10px 0);
+      transition: clip-path 2.4s var(--ease-in-out);
     }
     :global(.js) .skyline.is-in path {
-      stroke-dashoffset: 0;
+      clip-path: inset(-10px 0 -10px 0);
     }
   }
 </style>

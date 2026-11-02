@@ -33,9 +33,9 @@
   --step-0: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
   --step-1: clamp(1.15rem, 1.08rem + 0.35vw, 1.35rem);
   --step-2: clamp(1.4rem, 1.25rem + 0.7vw, 1.85rem);
-  --step-3: clamp(1.8rem, 1.5rem + 1.4vw, 2.75rem);
-  --step-4: clamp(2rem, 1.6rem + 2vw, 3.4rem);
-  --step-5: clamp(2.6rem, 1.8rem + 3.8vw, 5.25rem);
+  --step-3: clamp(1.5rem, 1.35rem + 0.7vw, 2rem);
+  --step-4: clamp(1.85rem, 1.55rem + 1.3vw, 2.75rem);
+  --step-5: clamp(2.3rem, 1.9rem + 2vw, 3.6rem);
 
   --gutter: clamp(1rem, 0.6rem + 2vw, 2.5rem);
   --max: 82rem;
@@ -121,10 +121,10 @@ h1,
 h2,
 h3,
 h4 {
-  line-height: 1.05;
-  font-weight: 760;
+  line-height: 1.1;
+  font-weight: 640;
   letter-spacing: -0.025em;
-  font-variation-settings: 'wdth' 112;
+  font-variation-settings: 'wdth' 102;
   text-wrap: balance;
 }
 h1 {
@@ -228,7 +228,7 @@ ol[role='list'] {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--orange-ink);
-  font-variation-settings: 'wdth' 110;
+  font-variation-settings: 'wdth' 102;
 }
 .eyebrow::before {
   content: '';
@@ -494,7 +494,7 @@ ol[role='list'] {
 }
 .cursor-label {
   font-size: 0.8rem;
-  font-weight: 700;
+  font-weight: 640;
   letter-spacing: 0.04em;
   color: var(--ink);
   opacity: 0;
@@ -507,4 +507,16 @@ ol[role='list'] {
 /* Lenis drives scrolling when motion is active; native smooth scrolling would fight it. */
 html.has-motion {
   scroll-behavior: auto;
+}
+
+/* Heading word reveal (motion.ts) */
+.hw {
+  display: inline-block;
+  overflow: clip;
+  vertical-align: top;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.hw > span {
+  display: inline-block;
 }
