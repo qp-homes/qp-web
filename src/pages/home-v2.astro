@@ -9,7 +9,8 @@ import Faq from '../components/Faq.astro';
 import { photos } from '../data/photos';
 import { site, primaryCta } from '../data/site';
 import { primaryServices, supportServices, serviceHref } from '../data/services';
-import { laCountyCities } from '../data/areas';
+import { areas, laCountyCities } from '../data/areas';
+import Gallery from '../components/Gallery.astro';
 
 const headline = 'Professional Commercial Cleaning Services in Los Angeles';
 
@@ -28,7 +29,25 @@ const commitments = [
   },
 ];
 
+const gallery = [
+  { photo: 'teamGroup', caption: 'The Quality Plus team.' },
+  { photo: 'storefrontGlass', caption: 'Storefront glass, downtown Los Angeles.' },
+  { photo: 'fitnessRoom', caption: 'Building amenity: fitness room floor care.' },
+  { photo: 'powerWashPatio', caption: 'Patio power washing with a surface cleaner.' },
+  { photo: 'elevatorThreshold', caption: 'Detail work on an elevator threshold.' },
+  { photo: 'counterSanitizing', caption: 'Restroom counters and fixtures.' },
+  { photo: 'twoMembersMopping', caption: 'Cleaning a large floor in a commercial space.' },
+] as const;
+
 const faqs = [
+  {
+    q: 'What kinds of facilities do you clean?',
+    a: 'We focus on commercial facilities: retail stores, medical offices, office and multi-tenant buildings, and shared building amenities. We do not offer residential cleaning.',
+  },
+  {
+    q: 'Can additional services be included in our plan?',
+    a: 'Yes. Power washing, window cleaning, and carpet cleaning can be added to a regular plan or scheduled on their own.',
+  },
   {
     q: 'Can cleaning happen outside our business hours?',
     a: 'Schedules are set around your operating hours and building rules. We confirm the service window and access during the walkthrough.',
@@ -56,7 +75,7 @@ const faqs = [
     <section class="hero" data-hero>
       <div class="container hero-content" data-hero-content>
         <p class="eyebrow">When the building empties</p>
-        <h1>{headline}</h1>
+        <h1 aria-label={headline}>{headline.split(' ').map((w, i) => <><span class="w" aria-hidden="true"><span style={`--i:${i}`}>{w}</span></span>{' '}</>)}</h1>
         <p class="lead">
           Reliable cleaning solutions for retail stores, medical offices, and commercial buildings, planned around your
           operating hours and building rules.
@@ -76,6 +95,17 @@ const faqs = [
         </p>
       </div>
     </section>
+
+    <div class="interlude" data-interlude>
+      <div class="container">
+        <p class="stamp" aria-hidden="true"><span data-live-time>7:30 PM</span></p>
+        <p class="kinetic" data-kinetic>The lights go out. The work begins.</p>
+      </div>
+    </div>
+
+    <div class="drift-wrap" aria-hidden="true">
+      <p class="drift" data-drift>Retail Stores — Medical Offices — Commercial Buildings — Building Amenities</p>
+    </div>
 
     <section class="section" aria-labelledby="services-title">
       <div class="container">
@@ -112,6 +142,13 @@ const faqs = [
       </div>
     </section>
 
+    <div class="interlude" data-interlude>
+      <div class="container">
+        <p class="stamp" aria-hidden="true"><span data-live-time>11:00 PM</span></p>
+        <p class="kinetic" data-kinetic>Floor by floor. Room by room.</p>
+      </div>
+    </div>
+
     <Process />
 
     <section class="section" aria-labelledby="why-title">
@@ -131,10 +168,45 @@ const faqs = [
             ))
           }
         </ol>
-        <a href="/service-areas/los-angeles-county/" class="link">
-          Check {laCountyCities.length} cities in LA County <Icon name="arrow" />
-        </a>
       </div>
+    </section>
+
+    <div class="interlude" data-interlude>
+      <div class="container">
+        <p class="stamp" aria-hidden="true"><span data-live-time>3:00 AM</span></p>
+        <p class="kinetic" data-kinetic>Nobody sees the work. Everybody sees the result.</p>
+      </div>
+    </div>
+
+    <section class="section" aria-labelledby="coverage-title">
+      <div class="container narrow">
+        <p class="eyebrow">Service coverage</p>
+        <h2 id="coverage-title">Commercial Cleaning Across the Los Angeles Area</h2>
+        <p class="lead">
+          Los Angeles County is our home and primary service area — from Downtown LA and the Westside to the San Gabriel
+          Valley, the South Bay, and the Antelope Valley.
+        </p>
+        <ul role="list" class="regions">
+          {
+            areas.map((a) => (
+              <li>
+                <a href={`/service-areas/${a.slug}/`}>
+                  <span class="r-name">{a.name}</span>
+                  <span class="r-status">{a.indexable ? `Primary area · ${laCountyCities.length} cities` : 'Projects reviewed by request'}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <section class="proof" aria-labelledby="proof-title">
+      <div class="container narrow">
+        <p class="eyebrow">Real people, real work</p>
+        <h2 id="proof-title">See the Team Behind the Work</h2>
+      </div>
+      <Gallery items={[...gallery]} label="Photos of the Quality Plus team at work" />
     </section>
 
     <section class="section">
@@ -145,7 +217,8 @@ const faqs = [
 
     <section class="dawn" aria-labelledby="dawn-title" data-dawn-end>
       <div class="container narrow">
-        <p class="eyebrow">Morning</p>
+        <p class="stamp" aria-hidden="true"><span data-live-time>6:00 AM</span></p>
+        <p class="kinetic kinetic--static">Doors open. Everything’s ready.</p>
         <h2 id="dawn-title">Let’s Build a Cleaning Plan for Your Facility</h2>
         <p class="lead">Share a few details about your property, and we’ll schedule a walkthrough.</p>
         <div class="btn-row" data-hide-mobile-bar>
@@ -214,6 +287,115 @@ const faqs = [
   }
   .hero .lead {
     max-width: 36rem;
+  }
+
+  .w {
+    display: inline-block;
+    overflow: clip;
+    vertical-align: top;
+    padding-bottom: 0.06em;
+  }
+  .w > span {
+    display: inline-block;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .w > span {
+      animation: rise-word 1.2s var(--ease-out) both;
+      animation-delay: calc(150ms + var(--i) * 65ms);
+    }
+  }
+  @keyframes rise-word {
+    from {
+      transform: translateY(105%) rotate(4deg);
+    }
+  }
+
+  .interlude {
+    min-height: 130svh;
+    display: grid;
+    align-items: center;
+    padding-block: 4rem;
+  }
+  .stamp {
+    margin-bottom: 0.75rem;
+    color: var(--orange-hover);
+    font-size: var(--step-1);
+    font-weight: 640;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+  }
+  .kinetic {
+    max-width: 13ch;
+    font-size: clamp(2.5rem, 1.6rem + 4vw, 5.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    font-weight: 680;
+    font-variation-settings: 'wdth' 104;
+    text-shadow: 0 2px 30px rgb(10 18 28 / 0.7);
+  }
+  .kinetic--static {
+    margin-bottom: 1.5rem;
+  }
+  /* The tower sits behind the text on phones, so the line rests on a dark base. */
+  @media (max-width: 63.99rem) {
+    .interlude {
+      align-items: end;
+      padding-bottom: 36svh;
+    }
+    .interlude .container {
+      padding-block: 1.25rem;
+      background: rgb(10 18 28 / 0.72);
+      border-radius: var(--radius-lg);
+    }
+  }
+  .drift-wrap {
+    overflow: clip;
+    padding-block: 1rem;
+  }
+  .drift {
+    width: max-content;
+    font-size: clamp(3rem, 2rem + 6vw, 7.5rem);
+    line-height: 1.1;
+    font-weight: 800;
+    font-variation-settings: 'wdth' 118;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgb(159 201 239 / 0.5);
+  }
+
+  .regions {
+    width: 100%;
+    border-top: 1px solid var(--line-dark);
+  }
+  .regions a {
+    display: grid;
+    gap: 0.15rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--line-dark);
+    text-decoration: none;
+  }
+  .r-name {
+    font-size: var(--step-2);
+    font-weight: 640;
+    letter-spacing: -0.02em;
+    transition: transform 0.45s var(--ease-out);
+  }
+  .regions a:hover .r-name {
+    transform: translateX(0.5rem);
+  }
+  .r-status {
+    font-size: var(--step--1);
+    color: var(--v2-muted);
+  }
+  .proof {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+    padding-block: var(--section);
+  }
+  .proof :global(figcaption) {
+    color: var(--v2-muted);
   }
 
   .chapter {

@@ -8,7 +8,9 @@
  * Hooks (data attributes):
  *   [data-hero]          hero: background drifts, content eases out on scroll
  *   [data-scrub-words]   statement text lights up word by word while scrolling
- *   [data-hscroll]       section pins and its [data-hscroll-track] scrolls sideways (desktop)
+ *   [data-kinetic]       line rises in and leaves word by word, tied to the scroll
+ *   [data-drift]         oversized line slides sideways while scrolling
+ *   [data-hscroll]     section pins and its [data-hscroll-track] scrolls sideways (desktop)
  *   main h2              headings rise word by word when they enter
  *   [data-clip]          image frame reveals with a clip + scale when it enters
  *   [data-magnetic]      element leans toward the pointer (fine pointers only)
@@ -52,6 +54,8 @@ async function init() {
   heroMotion(gsap);
   scrubWords(gsap);
   headingReveals(gsap);
+  kineticLines(gsap);
+  driftLines(gsap);
   horizontalSections(gsap, ScrollTrigger);
   clipReveals(gsap);
   if (finePointer.matches) {
@@ -112,6 +116,36 @@ function headingReveals(gsap: G) {
       ease: 'expo.out',
       scrollTrigger: { trigger: el, start: 'top 90%', once: true },
     });
+  });
+}
+
+function kineticLines(gsap: G) {
+  document.querySelectorAll<HTMLElement>('[data-kinetic]').forEach((el) => {
+    const text = el.textContent!.trim();
+    const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    const words = text.split(/\s+/).map((w) => `<span class="hw"><span>${esc(w)}</span></span>`).join(' ');
+    el.innerHTML = `<span class="visually-hidden">${esc(text)}</span><span aria-hidden="true">${words}</span>`;
+    const spans = el.querySelectorAll('.hw > span');
+    gsap
+      .timeline({
+        scrollTrigger: { trigger: el, start: 'top 95%', end: 'bottom 5%', scrub: 0.5 },
+      })
+      .from(spans, { yPercent: 115, stagger: 0.04, duration: 0.3, ease: 'power3.out' })
+      .to(spans, { yPercent: -115, stagger: 0.03, duration: 0.25, ease: 'power2.in' }, '+=0.45');
+  });
+}
+
+function driftLines(gsap: G) {
+  document.querySelectorAll<HTMLElement>('[data-drift]').forEach((el) => {
+    gsap.fromTo(
+      el,
+      { xPercent: 4 },
+      {
+        xPercent: -28,
+        ease: 'none',
+        scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true },
+      },
+    );
   });
 }
 
