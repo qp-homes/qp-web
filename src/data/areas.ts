@@ -45,7 +45,7 @@ export const areas: Area[] = [
       'Commercial cleaning for retail stores, medical offices, and commercial buildings across Los Angeles County. Based in Los Angeles. Request a site walkthrough.',
     h1: 'Commercial Cleaning Services in Los Angeles County',
     lead:
-      'Los Angeles County is home base. Our team works out of Los Angeles and plans routes, crews, and schedules around the realities of the county — traffic windows, after-hours access, and buildings that never fully close.',
+      'Los Angeles County is our home base. Our team works out of Los Angeles and plans routes, crews, and schedules around the realities of the county — traffic windows, after-hours access, and buildings that never fully close.',
     body: [
       'A storefront on a busy boulevard, a medical suite inside a mixed-use building, and a multi-tenant office tower all need something different from a cleaning partner. That is why every new account starts with a walkthrough: we see the space, the traffic patterns, and the access rules before we propose a scope or a schedule.',
       'Being based in the county means supervisors can visit sites in person, respond when something changes, and keep the same faces on your account. You get a team that knows your building — not a different crew every week.',

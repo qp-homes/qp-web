@@ -104,7 +104,7 @@ export const services: Service[] = [
     summary: 'Waiting rooms, front desks, and restrooms that reflect the care your practice provides.',
     intro: [
       'Patients judge a practice by what they see in the first five minutes: the waiting room, the front desk, the restroom. A consistently clean office supports the trust you have built with every patient visit.',
-      'Our medical office service focuses on the routine cleaning of patient-facing and administrative spaces. Every plan is agreed with your office manager in advance — which rooms we enter, when, which products are used, and anything your practice requires us to handle differently.',
+      'Our medical office service focuses on the routine cleaning of patient-facing and administrative spaces. We agree on every plan with your office manager in advance: which rooms we enter, when we enter them, which products we use, and anything your practice requires us to handle differently.',
     ],
     facilities: [
       'Private practices and physician offices',
@@ -135,7 +135,7 @@ export const services: Service[] = [
       },
       {
         title: 'Consistent team',
-        text: 'We aim to keep the same team on your office, so they learn your space and your expectations.',
+        text: 'We aim to keep the same team assigned to your office, so they learn your space and your expectations.',
       },
     ],
     note:
@@ -297,7 +297,7 @@ export const services: Service[] = [
     scopeHeading: 'Glass we commonly clean',
     scope: [
       'Storefront and display windows',
-      'Entrance doors and side lights',
+      'Entrance doors and sidelights',
       'Interior glass partitions',
       'Frames, sills, and tracks within reach',
     ],
@@ -315,7 +315,7 @@ export const services: Service[] = [
     faqs: [
       {
         q: 'Do you clean high-rise exterior windows?',
-        a: 'Our window service focuses on storefronts, entrances, interior glass, and windows that can be reached safely from the ground. We confirm the reach for your property during the walkthrough.',
+        a: 'Our window service focuses on storefronts, entrances, interior glass, and windows that can be reached safely from the ground. We confirm which windows we can reach during the walkthrough.',
       },
       {
         q: 'Can window cleaning be added to a regular plan?',
