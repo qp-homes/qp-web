@@ -40,6 +40,7 @@ const inSection = (href: string) =>
                   {item.label}
                   <Icon name="chevron" class="chev" />
                 </button>
+                <noscript><a href={item.href} class="nav-link">{item.label}</a></noscript>
                 <div class="menu-panel" id="services-menu" hidden data-menu-panel>
                   <div class="menu-col">
                     <p class="menu-label">Core services</p>
@@ -446,6 +447,30 @@ const inSection = (href: string) =>
     background: var(--paper);
     padding-block: 1.5rem 7rem;
     border-top: 1px solid var(--line);
+  }
+  :global(html:not(.js)) [data-menu-toggle],
+  :global(html:not(.js)) [data-mobile-toggle] {
+    display: none;
+  }
+  @media (max-width: 63.999rem) {
+    :global(html:not(.js)) .mobile-nav[hidden] {
+      display: block !important;
+      position: static;
+      overflow: visible;
+    }
+  }
+  :global(html:not(.js)) .site-header.overlay {
+    position: relative;
+    color: var(--ink);
+  }
+  :global(html:not(.js)) .site-header.overlay::before {
+    opacity: 1;
+  }
+  :global(html:not(.js)) .site-header.overlay .logo-light {
+    display: block;
+  }
+  :global(html:not(.js)) .site-header.overlay .logo-dark {
+    display: none;
   }
   .m-main {
     margin-bottom: 2rem;

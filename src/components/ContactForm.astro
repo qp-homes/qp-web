@@ -157,7 +157,7 @@ const frequencies = ['Daily', 'Several times a week', 'Weekly', 'Every two weeks
     today, call <a href="tel:+13236600751">(323) 660-0751</a>.
   </p>
 
-  <button type="submit" class="btn submit" data-submit>
+  <button type="submit" class="btn submit" data-submit disabled>
     Request a Site Walkthrough <Icon name="arrow" />
   </button>
 
@@ -379,6 +379,7 @@ const frequencies = ['Daily', 'Several times a week', 'Weekly', 'Every two weeks
     const list = form.querySelector<HTMLElement>('[data-error-list]')!;
     const success = form.querySelector<HTMLElement>('[data-success]')!;
     const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    submit.disabled = false;
     let lastSubmit = 0;
 
     const labelFor = (el: HTMLElement) => {
