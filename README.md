@@ -139,3 +139,5 @@ skip link, foco visible, menús con `aria-expanded` y Escape, formulario con res
 
 **Tipografía**: Archivo Variable (ejes de peso y anchura) autoalojada vía `@fontsource` y precargada; sin
 llamadas a Google Fonts.
+
+Antes de publicar: npm run check y npm run build.
