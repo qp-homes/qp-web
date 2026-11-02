@@ -1,0 +1,188 @@
+---
+import Photo from './Photo.astro';
+import Icon from './Icon.astro';
+import { photos } from '../data/photos';
+import { serviceHref, type Service } from '../data/services';
+
+/**
+ * Large linked rows for the core services. On devices with a fine pointer,
+ * a photo preview follows the cursor; on touch devices the photo sits inline.
+ */
+interface Props {
+  items: Service[];
+  headingLevel?: 'h2' | 'h3';
+}
+const { items, headingLevel = 'h3' } = Astro.props;
+const H = headingLevel;
+---
+
+<ul role="list" class="rows" data-rows>
+  {
+    items.map((s, i) => (
+      <li class="row" data-reveal style={`--d:${i}`}>
+        <a href={serviceHref(s.slug)} class="row-link">
+          <span class="idx">0{i + 1}</span>
+          <span class="main">
+            <H class="name">{s.name}</H>
+            <span class="summary">{s.summary}</span>
+          </span>
+          <span class="tags">
+            {s.facilities.slice(0, 3).map((f) => (
+              <span class="tag">{f}</span>
+            ))}
+          </span>
+          <span class="go" aria-hidden="true">
+            <Icon name="arrow" />
+          </span>
+          <span class="preview frame" aria-hidden="true">
+            <Photo photo={photos[s.hero]} decorative sizes="(min-width: 64rem) 320px, 40vw" widths={[320, 480, 640]} aspect={4 / 5} />
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .rows {
+    position: relative;
+    border-top: 1px solid var(--line);
+  }
+  .row {
+    border-bottom: 1px solid var(--line);
+  }
+  .row-link {
+    position: relative;
+    display: grid;
+    grid-template-columns: 5.5rem 1fr auto;
+    grid-template-areas:
+      'prev main go'
+      'prev tags tags';
+    align-items: start;
+    gap: 0.75rem 1.25rem;
+    padding: 1.75rem 0;
+    text-decoration: none;
+  }
+  .idx {
+    grid-area: idx;
+    display: none;
+    font-variant-numeric: tabular-nums;
+    font-weight: 650;
+    color: var(--orange-ink);
+    padding-top: 0.55rem;
+  }
+  .main {
+    grid-area: main;
+    display: grid;
+    gap: 0.4rem;
+  }
+  .name {
+    font-size: var(--step-3);
+    line-height: 1.02;
+    transition: transform 0.5s var(--ease-out);
+  }
+  .summary {
+    color: var(--muted);
+    max-width: 34rem;
+  }
+  .tags {
+    grid-area: tags;
+  }
+  .go {
+    grid-area: go;
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    transition:
+      background-color 0.35s var(--ease-out),
+      border-color 0.35s var(--ease-out);
+  }
+  .go svg {
+    width: 1.3rem;
+    height: 1.3rem;
+    transition: transform 0.45s var(--ease-out);
+  }
+  .row-link:hover .go,
+  .row-link:focus-visible .go {
+    background: var(--orange);
+    border-color: var(--orange);
+  }
+  .row-link:hover .go svg {
+    transform: rotate(-45deg);
+  }
+  .preview {
+    grid-area: prev;
+    aspect-ratio: 4 / 5;
+    align-self: start;
+  }
+
+  /* Desktop: wide rows with a cursor-following preview */
+  @media (min-width: 64rem) {
+    .row-link {
+      grid-template-columns: 4rem 1.3fr 1fr auto;
+      grid-template-areas: 'idx main tags go';
+      align-items: center;
+      padding: 2.25rem 0;
+    }
+    .idx {
+      display: block;
+      padding-top: 0;
+    }
+    .tags {
+      justify-content: flex-start;
+    }
+    .row-link:hover .name {
+      transform: translateX(0.6rem);
+    }
+  }
+  @media (min-width: 64rem) and (hover: hover) and (pointer: fine) {
+    .preview {
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      left: 0;
+      width: 15rem;
+      aspect-ratio: 4 / 5;
+      margin: 0;
+      pointer-events: none;
+      opacity: 0;
+      translate: var(--x, 50%) var(--y, 0);
+      transform: translate(-50%, -50%) scale(0.85) rotate(-3deg);
+      transition:
+        opacity 0.3s var(--ease-out),
+        transform 0.5s var(--ease-out);
+      box-shadow: 0 30px 60px -25px rgb(20 32 46 / 0.5);
+    }
+    .row-link:hover .preview {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1) rotate(-3deg);
+    }
+  }
+  @media (min-width: 64rem) and (not ((hover: hover) and (pointer: fine))) {
+    .preview {
+      display: none;
+    }
+  }
+  @media (min-width: 64rem) and (prefers-reduced-motion: reduce) {
+    .preview {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const rows = document.querySelectorAll<HTMLElement>('[data-rows] .row-link');
+  const fine = window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 64rem)');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  rows.forEach((row) => {
+    row.addEventListener('pointermove', (e) => {
+      if (!fine.matches || reduce.matches) return;
+      const r = row.getBoundingClientRect();
+      row.style.setProperty('--x', `${e.clientX - r.left}px`);
+      row.style.setProperty('--y', `${e.clientY - r.top}px`);
+    });
+  });
+</script>

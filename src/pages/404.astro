@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import Skyline from '../components/Skyline.astro';
+import { primaryServices, serviceHref } from '../data/services';
+---
+
+<BaseLayout
+  title="Page Not Found | Quality Plus Building Services"
+  description="The page you are looking for could not be found."
+  noindex
+>
+  <section class="nf">
+    <div class="container inner">
+      <p class="code" aria-hidden="true">404</p>
+      <h1>This Page Isn’t Here</h1>
+      <p class="lead">The link may be outdated or the address may be mistyped. These pages can help you find your way:</p>
+      <ul role="list" class="links">
+        <li><a href="/" class="link">Home <Icon name="arrow" /></a></li>
+        <li><a href="/commercial-cleaning-services/" class="link">Commercial cleaning services <Icon name="arrow" /></a></li>
+        {primaryServices.map((s) => <li><a href={serviceHref(s.slug)} class="link">{s.name} <Icon name="arrow" /></a></li>)}
+        <li><a href="/contact/" class="link">Contact us <Icon name="arrow" /></a></li>
+      </ul>
+    </div>
+    <Skyline tone="orange" class="nf-line" />
+  </section>
+</BaseLayout>
+
+<style>
+  .nf {
+    position: relative;
+    padding-block: clamp(3rem, 2rem + 5vw, 7rem) clamp(7rem, 5rem + 6vw, 11rem);
+    overflow: hidden;
+  }
+  .inner {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+  }
+  .code {
+    font-size: clamp(5rem, 3rem + 10vw, 11rem);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    font-variation-settings: 'wdth' 125;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--sky);
+  }
+  h1 {
+    font-size: var(--step-4);
+  }
+  .links {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+  }
+  .nf-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 6rem;
+    z-index: -1;
+  }
+</style>

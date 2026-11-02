@@ -1,0 +1,98 @@
+---
+import Icon from './Icon.astro';
+import Skyline from './Skyline.astro';
+import { site, primaryCta } from '../data/site';
+
+interface Props {
+  title?: string;
+  text?: string;
+  cta?: { label: string; href: string };
+}
+const {
+  title = 'Let’s Build a Cleaning Plan for Your Facility',
+  text = 'Share a few details about your property, and let’s discuss the next step.',
+  cta = primaryCta,
+} = Astro.props;
+---
+
+<section class="cta-band" aria-labelledby="cta-title">
+  <div class="container inner" data-reveal>
+    <h2 id="cta-title">{title}</h2>
+    <div class="side">
+      <p>{text}</p>
+      <div class="btn-row" data-hide-mobile-bar>
+        <a href={cta.href} class="btn btn--dark" data-magnetic>{cta.label} <Icon name="arrow" /></a>
+        <a href={site.phoneHref} class="phone" data-track="click_to_call">
+          <Icon name="phone" /> {site.phone}
+        </a>
+      </div>
+    </div>
+  </div>
+  <Skyline tone="light" class="band-line" />
+</section>
+
+<style>
+  .cta-band {
+    position: relative;
+    background: var(--orange);
+    color: var(--ink);
+    padding-block: clamp(4rem, 3rem + 5vw, 7.5rem);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .inner {
+    display: grid;
+    gap: 2rem;
+    align-items: end;
+  }
+  @media (min-width: 64rem) {
+    .inner {
+      grid-template-columns: 1.4fr 1fr;
+      gap: 4rem;
+    }
+  }
+  h2 {
+    font-size: var(--step-5);
+    max-width: 14ch;
+  }
+  .side {
+    display: grid;
+    gap: 1.5rem;
+    font-size: var(--step-1);
+  }
+  .btn--dark {
+    --btn-bg: var(--ink);
+    --btn-fg: var(--on-dark);
+  }
+  .btn--dark:hover {
+    background: var(--ink-3);
+  }
+  .phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 680;
+    min-height: 3rem;
+    padding-inline: 0.5rem;
+    text-decoration: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .phone:hover {
+    text-decoration: underline;
+  }
+  .phone svg {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+  .band-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.5rem;
+    height: 7rem;
+    z-index: -1;
+  }
+  .band-line :global(path) {
+    stroke: rgb(20 32 46 / 0.22) !important;
+  }
+</style>

@@ -1,0 +1,167 @@
+---
+import Icon from './Icon.astro';
+import { primaryCta } from '../data/site';
+
+const steps = [
+  {
+    title: 'Tell Us About Your Facility',
+    text: 'Share the location, facility type, approximate size, and what you need. A short form or a phone call is enough to start.',
+  },
+  {
+    title: 'Schedule a Site Walkthrough',
+    text: 'We visit the property to see the space, discuss scope and priorities, and review access, hours, and any building rules.',
+  },
+  {
+    title: 'Receive a Customized Proposal',
+    text: 'You get a written proposal with the service scope, frequency, and schedule — built for your facility, not copied from a template.',
+  },
+  {
+    title: 'Start With a Clear Cleaning Plan',
+    text: 'Service begins only after you approve the plan, so everyone knows what is included and who to contact.',
+  },
+];
+---
+
+<section class="section process dark" aria-labelledby="process-title" data-process>
+  <div class="container grid">
+    <div class="head">
+      <p class="eyebrow">How it works</p>
+      <h2 id="process-title">A Clear Process From Walkthrough to Service</h2>
+      <p class="lead">No instant quotes and no guesswork. Every proposal starts with seeing your facility in person.</p>
+      <a href={primaryCta.href} class="btn">{primaryCta.label} <Icon name="arrow" /></a>
+    </div>
+    <div class="steps-wrap">
+    <span class="rail" aria-hidden="true"><span class="fill" data-process-fill></span></span>
+    <ol role="list" class="steps">
+      {
+        steps.map((s, i) => (
+          <li class="step" data-step>
+            <span class="num" aria-hidden="true">0{i + 1}</span>
+            <div>
+              <h3>
+                <span class="visually-hidden">Step {i + 1}: </span>
+                {s.title}
+              </h3>
+              <p>{s.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    gap: 3rem;
+  }
+  @media (min-width: 64rem) {
+    .grid {
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 6rem;
+    }
+    .head {
+      position: sticky;
+      top: calc(var(--header-h) + 3rem);
+      align-self: start;
+    }
+  }
+  .head {
+    display: grid;
+    gap: 1.4rem;
+    justify-items: start;
+  }
+  .steps-wrap {
+    position: relative;
+  }
+  .steps {
+    display: grid;
+    gap: clamp(2.5rem, 2rem + 3vw, 5rem);
+    padding-left: 0;
+  }
+  .rail {
+    position: absolute;
+    left: 1.6rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 2px;
+    background: var(--line-dark);
+  }
+  .fill {
+    position: absolute;
+    inset: 0;
+    background: var(--orange);
+    transform-origin: top;
+    transform: scaleY(var(--progress, 1));
+  }
+  .step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 3.2rem 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  .num {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+    background: var(--ink);
+    border: 2px solid var(--line-dark);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--on-dark-muted);
+    transition:
+      border-color 0.4s,
+      color 0.4s,
+      background-color 0.4s;
+  }
+  .step.is-active .num {
+    border-color: var(--orange);
+    color: var(--ink);
+    background: var(--orange);
+  }
+  .step h3 {
+    font-size: var(--step-2);
+    margin: 0.5rem 0 0.75rem;
+  }
+  .step p {
+    color: var(--on-dark-muted);
+    max-width: 34rem;
+  }
+</style>
+
+<script>
+  // Fill the rail and light up steps as the list scrolls through the viewport.
+  const root = document.querySelector<HTMLElement>('[data-process]');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (root && !reduce) {
+    const list = root.querySelector<HTMLElement>('.steps')!;
+    const fill = root.querySelector<HTMLElement>('[data-process-fill]')!;
+    const steps = [...root.querySelectorAll<HTMLElement>('[data-step]')];
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const r = list.getBoundingClientRect();
+      const mid = window.innerHeight * 0.6;
+      const p = Math.min(1, Math.max(0, (mid - r.top) / r.height));
+      fill.style.setProperty('--progress', p.toFixed(3));
+      steps.forEach((s) => s.classList.toggle('is-active', s.getBoundingClientRect().top < mid));
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+  } else if (root) {
+    root.querySelectorAll('[data-step]').forEach((s) => s.classList.add('is-active'));
+  }
+</script>

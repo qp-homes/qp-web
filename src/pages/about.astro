@@ -1,0 +1,191 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Photo from '../components/Photo.astro';
+import Gallery from '../components/Gallery.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Skyline from '../components/Skyline.astro';
+import { photos } from '../data/photos';
+import { site } from '../data/site';
+
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'About', href: '/about/' },
+];
+
+// Founding year renders only once approved in src/data/site.ts
+const since = site.foundedYear ? ` in ${site.foundedYear}` : '';
+
+const values = [
+  { title: 'Integrity', text: 'We say what is included, do what we agreed, and tell you when something needs attention.' },
+  { title: 'Consistency', text: 'The same standard on every visit, documented so it does not depend on memory.' },
+  { title: 'A personal touch', text: 'You work with people who know your facility by name — not a call center.' },
+  { title: 'Care', text: 'We treat your building, your equipment, and your people with respect.' },
+];
+
+const team = [
+  { photo: 'teamGroup', caption: 'The Quality Plus team.' },
+  { photo: 'cartSmiling', caption: 'Ready for the evening shift.' },
+  { photo: 'scissorLift', caption: 'Safety gear on an active job site.' },
+  { photo: 'teamOutdoorDowntown', caption: 'Outdoor cleanup in downtown Los Angeles.' },
+  { photo: 'eventSpace', caption: 'Preparing a large event space.' },
+  { photo: 'hardHat', caption: 'Hard hat and high-visibility vest on site.' },
+] as const;
+---
+
+<BaseLayout
+  title="About Quality Plus Building Services | Los Angeles"
+  description="Meet Quality Plus Building Services, a Los Angeles commercial cleaning company founded by Karla Carpio. Our team, values, and how we work with facilities."
+  breadcrumbs={breadcrumbs}
+>
+  <PageHero
+    eyebrow="About us"
+    title="Meet Quality Plus Building Services"
+    lead={`A Los Angeles commercial cleaning company built on personal oversight, consistent work, and a team that takes pride in the details.`}
+    breadcrumbs={breadcrumbs}
+    photo={photos.teamGroup}
+    cta={{ label: 'Discuss Your Facility Needs', href: '/contact/' }}
+  />
+
+  <section class="section" aria-labelledby="story-title">
+    <div class="container story">
+      <div class="frame portrait" data-reveal>
+        <Photo photo={photos.officeTeamKarla} sizes="(min-width: 64rem) 36vw, 90vw" widths={[480, 720, 960]} aspect={4 / 5} />
+      </div>
+      <div class="prose">
+        <p class="eyebrow">Our story</p>
+        <h2 id="story-title">From a Small Operation to a Trusted Commercial Partner</h2>
+        <p class="lead">
+          Quality Plus was founded{since} by {site.founder}, who started with a small cleaning operation and a simple
+          standard: do the job as if it were your own building.
+        </p>
+        <p>
+          That standard still shapes how we work. Karla remains closely involved in the business, and our team has grown
+          around the same principles — showing up when we say we will, paying attention to the details others skip, and
+          keeping clients informed.
+        </p>
+        <p>
+          Today we focus entirely on commercial facilities: retail stores, medical offices, and commercial buildings
+          across Los Angeles County. Each account starts with a walkthrough, and each plan is written for the facility it
+          serves.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section dark mission" aria-labelledby="mission-title">
+    <Skyline tone="light" class="m-line" />
+    <div class="container">
+      <p class="eyebrow">Our mission</p>
+      <h2 id="mission-title" class="statement" data-reveal>
+        Elevate every environment we serve — delivering not just cleaning, but <em>confidence</em> and peace of mind.
+      </h2>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="values-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">What we value</p>
+        <h2 id="values-title">How We Work With Every Client</h2>
+      </div>
+      <ol role="list" class="values">
+        {
+          values.map((v, i) => (
+            <li data-reveal style={`--d:${i}`}>
+              <span class="index">0{i + 1}</span>
+              <h3>{v.title}</h3>
+              <p class="muted">{v.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section alt" aria-labelledby="team-title">
+    <div class="container section-head section-head--split">
+      <div>
+        <p class="eyebrow">Our team</p>
+        <h2 id="team-title">The People Behind the Work</h2>
+      </div>
+      <p class="lead">Uniformed, identifiable, and proud of what they do. These are the people who take care of our clients’ facilities.</p>
+    </div>
+    <Gallery items={[...team]} label="Photos of the Quality Plus team" />
+  </section>
+
+  <CtaBand title="Discuss Your Facility Needs" cta={{ label: 'Discuss Your Facility Needs', href: '/contact/' }} />
+</BaseLayout>
+
+<style>
+  .story {
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+  }
+  @media (min-width: 64rem) {
+    .story {
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 6rem;
+    }
+  }
+  .portrait {
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-lg);
+    max-width: 30rem;
+  }
+  .story .prose {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .story .prose p + p {
+    margin-top: 0;
+  }
+  .mission {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .m-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 9rem;
+    z-index: -1;
+  }
+  .statement {
+    margin-top: 1.5rem;
+    font-size: clamp(2rem, 1.4rem + 3vw, 4.25rem);
+    max-width: 22ch;
+    font-weight: 640;
+  }
+  .statement em {
+    font-style: normal;
+    color: var(--orange);
+  }
+  .values {
+    display: grid;
+    gap: 2.5rem;
+    border-top: 2px solid var(--ink);
+    padding-top: 2rem;
+  }
+  @media (min-width: 40rem) {
+    .values {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 64rem) {
+    .values {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .values li {
+    display: grid;
+    gap: 0.6rem;
+    align-content: start;
+  }
+  .values .index {
+    color: var(--orange-ink);
+  }
+</style>

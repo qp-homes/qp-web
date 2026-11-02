@@ -1,0 +1,124 @@
+---
+import Icon from './Icon.astro';
+
+/** Searchable city list. Without JS the full list is shown and the search box stays hidden. */
+interface Props {
+  cities: string[];
+  county: string;
+}
+const { cities, county } = Astro.props;
+const sorted = [...cities].sort((a, b) => a.localeCompare(b));
+---
+
+<div class="finder" data-finder>
+  <div class="search" hidden data-finder-search>
+    <label for="city-search">Find your city in {county}</label>
+    <div class="field">
+      <Icon name="search" />
+      <input
+        id="city-search"
+        type="search"
+        autocomplete="off"
+        placeholder="Start typing, e.g. Pasadena"
+        aria-describedby="city-count"
+        data-finder-input
+      />
+    </div>
+    <p id="city-count" class="count" aria-live="polite" data-finder-count>
+      {sorted.length} cities listed
+    </p>
+  </div>
+  <ul role="list" class="cities" data-finder-list>
+    {sorted.map((c) => <li data-city={c.toLowerCase()}>{c}</li>)}
+  </ul>
+  <p class="empty" hidden data-finder-empty>
+    Not listed? We may still be able to help. <a href="/contact/">Send us your facility address</a> and we’ll
+    confirm availability.
+  </p>
+</div>
+
+<style>
+  .search {
+    display: grid;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+    max-width: 32rem;
+  }
+  .search[hidden] {
+    display: none;
+  }
+  label {
+    font-weight: 650;
+  }
+  .field {
+    position: relative;
+  }
+  .field svg {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    translate: 0 -50%;
+    width: 1.2rem;
+    height: 1.2rem;
+    color: var(--muted);
+  }
+  input {
+    width: 100%;
+    min-height: 3.25rem;
+    padding: 0.75rem 1rem 0.75rem 2.9rem;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    background: var(--white);
+  }
+  input:focus-visible {
+    outline-offset: 2px;
+  }
+  .count {
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .cities {
+    columns: 2 11rem;
+    column-gap: 2rem;
+  }
+  .cities li {
+    break-inside: avoid;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid var(--line);
+    font-size: var(--step--1);
+  }
+  .cities li.is-match {
+    color: var(--orange-ink);
+    font-weight: 650;
+  }
+  .empty {
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+    border-left: 3px solid var(--orange);
+    background: var(--white);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-finder]').forEach((root) => {
+    const search = root.querySelector<HTMLElement>('[data-finder-search]')!;
+    const input = root.querySelector<HTMLInputElement>('[data-finder-input]')!;
+    const count = root.querySelector<HTMLElement>('[data-finder-count]')!;
+    const empty = root.querySelector<HTMLElement>('[data-finder-empty]')!;
+    const items = [...root.querySelectorAll<HTMLElement>('[data-city]')];
+    const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+    search.hidden = false;
+    input.addEventListener('input', () => {
+      const q = norm(input.value);
+      let shown = 0;
+      items.forEach((li) => {
+        const hit = !q || norm(li.dataset.city!).includes(q);
+        li.hidden = !hit;
+        li.classList.toggle('is-match', Boolean(q) && hit);
+        if (hit) shown++;
+      });
+      empty.hidden = shown > 0;
+      count.textContent = q ? `${shown} of ${items.length} cities match “${input.value.trim()}”` : `${items.length} cities listed`;
+    });
+  });
+</script>

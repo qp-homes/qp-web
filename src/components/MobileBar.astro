@@ -1,0 +1,75 @@
+---
+import Icon from './Icon.astro';
+import { site, primaryCta } from '../data/site';
+---
+
+<div class="mobile-bar" data-mobile-bar>
+  <a href={site.phoneHref} class="call" data-track="click_to_call">
+    <Icon name="phone" />
+    <span>Call</span>
+  </a>
+  <a href={primaryCta.href} class="btn walk">{primaryCta.shortLabel}</a>
+</div>
+
+<style>
+  .mobile-bar {
+    position: fixed;
+    z-index: 40;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem;
+    padding: 0.4rem;
+    background: var(--ink);
+    border-radius: 999px;
+    box-shadow: 0 18px 40px -16px rgb(20 32 46 / 0.6);
+    transition:
+      transform 0.4s var(--ease-out),
+      opacity 0.3s;
+  }
+  .mobile-bar.is-hidden {
+    transform: translateY(150%);
+    opacity: 0;
+  }
+  .call {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0 1.1rem;
+    min-height: 3rem;
+    color: var(--on-dark);
+    font-weight: 650;
+    text-decoration: none;
+    border-radius: 999px;
+    border: 1px solid rgb(255 255 255 / 0.25);
+  }
+  .call svg {
+    width: 1.15rem;
+    height: 1.15rem;
+    color: var(--orange);
+  }
+  .walk {
+    width: 100%;
+  }
+  @media (min-width: 64rem) {
+    .mobile-bar {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Hide the bar while the page's own CTAs or the footer are on screen.
+  const bar = document.querySelector<HTMLElement>('[data-mobile-bar]');
+  const targets = document.querySelectorAll('[data-hide-mobile-bar], [data-footer]');
+  if (bar && targets.length && 'IntersectionObserver' in window) {
+    const visible = new Set<Element>();
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => (e.isIntersecting ? visible.add(e.target) : visible.delete(e.target)));
+      bar.classList.toggle('is-hidden', visible.size > 0);
+    });
+    targets.forEach((t) => io.observe(t));
+  }
+</script>

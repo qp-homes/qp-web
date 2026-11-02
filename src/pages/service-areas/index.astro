@@ -1,0 +1,141 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+import CityFinder from '../../components/CityFinder.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { photos } from '../../data/photos';
+import { areas, laCountyCities } from '../../data/areas';
+
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Service Areas', href: '/service-areas/' },
+];
+const primary = areas.filter((a) => a.indexable);
+const byRequest = areas.filter((a) => !a.indexable);
+---
+
+<BaseLayout
+  title="Service Areas | Commercial Cleaning in Southern California | Quality Plus"
+  description="Quality Plus Building Services serves commercial facilities across Los Angeles County and reviews projects in Orange County, San Bernardino County, and San Diego."
+  breadcrumbs={breadcrumbs}
+>
+  <PageHero
+    eyebrow="Service areas"
+    title="Where We Provide Commercial Cleaning"
+    lead="Los Angeles County is our home and primary service area. Outside the county, we review each project individually so we only commit to schedules our team can keep."
+    breadcrumbs={breadcrumbs}
+    photo={photos.teamOutdoorDowntown}
+  />
+
+  <section class="section" aria-labelledby="primary-title">
+    <div class="container">
+      {
+        primary.map((a) => (
+          <div class="primary">
+            <div class="p-head">
+              <p class="eyebrow">Primary service area</p>
+              <h2 id="primary-title">{a.name}</h2>
+              <p class="lead">
+                {laCountyCities.length} cities, one local team. Search for your city below or open the county page for
+                more detail.
+              </p>
+              <a href={`/service-areas/${a.slug}/`} class="btn btn--ghost">
+                {a.name} details <Icon name="arrow" />
+              </a>
+            </div>
+            <CityFinder cities={a.cities ?? []} county={a.name} />
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section alt" aria-labelledby="request-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">By request</p>
+        <h2 id="request-title">Additional Regions</h2>
+        <p class="lead">
+          We review commercial projects in these regions on a case-by-case basis. Share your facility address and we’ll
+          confirm availability.
+        </p>
+      </div>
+      <ul role="list" class="regions">
+        {
+          byRequest.map((a) => (
+            <li>
+              <a href={`/service-areas/${a.slug}/`}>
+                <h3>{a.name}</h3>
+                <p class="muted">{a.lead}</p>
+                <span class="link">
+                  Learn more <Icon name="arrow" />
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand title="Check Availability for Your Facility" />
+</BaseLayout>
+
+<style>
+  .primary {
+    display: grid;
+    gap: 3rem;
+  }
+  @media (min-width: 64rem) {
+    .primary {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    .p-head {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+  .p-head {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+  }
+  .regions {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 48rem) {
+    .regions {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .regions a {
+    display: grid;
+    gap: 0.75rem;
+    height: 100%;
+    align-content: start;
+    padding: 1.75rem 1.5rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    transition:
+      border-color 0.3s,
+      transform 0.4s var(--ease-out);
+  }
+  .regions a:hover {
+    border-color: var(--ink);
+    transform: translateY(-4px);
+  }
+  .regions a:hover .link {
+    background-size: 100% 2px;
+  }
+  .regions .link {
+    justify-self: start;
+    margin-top: 0.5rem;
+    color: var(--orange-ink);
+  }
+</style>

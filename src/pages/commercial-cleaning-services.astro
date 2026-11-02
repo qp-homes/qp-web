@@ -1,0 +1,130 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import ServiceRows from '../components/ServiceRows.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import Process from '../components/Process.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { photos } from '../data/photos';
+import { primaryServices, supportServices, serviceHref } from '../data/services';
+
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Services', href: '/commercial-cleaning-services/' },
+];
+
+const faqs = [
+  {
+    q: 'Do you offer residential cleaning?',
+    a: 'No. Quality Plus Building Services focuses exclusively on commercial facilities such as retail stores, medical offices, and commercial buildings.',
+  },
+  {
+    q: 'Can I combine several services in one plan?',
+    a: 'Yes. Many clients pair a core cleaning plan with periodic window, carpet, or power washing work so everything is coordinated by one team.',
+  },
+  {
+    q: 'How do you price commercial cleaning?',
+    a: 'Pricing depends on the size of the facility, the scope, and the frequency. That is why we prepare a customized proposal after a site walkthrough instead of quoting online.',
+  },
+];
+---
+
+<BaseLayout
+  title="Commercial Cleaning Services in Los Angeles | Quality Plus"
+  description="Explore commercial cleaning services from Quality Plus: retail, medical office, and commercial building cleaning, plus power washing, window, and carpet cleaning."
+  breadcrumbs={breadcrumbs}
+>
+  <PageHero
+    eyebrow="Services"
+    title="Commercial Cleaning Services for Los Angeles Businesses"
+    lead="Three core services for the facilities we know best, plus specialized work you can add when you need it. Every plan starts with a walkthrough of your space."
+    breadcrumbs={breadcrumbs}
+    photo={photos.cartHallway}
+  />
+
+  <section class="section" aria-labelledby="core-title">
+    <div class="container">
+      <div class="section-head section-head--split">
+        <div>
+          <p class="eyebrow">Core services</p>
+          <h2 id="core-title">Cleaning Plans by Facility Type</h2>
+        </div>
+        <p class="lead">Choose the facility that matches yours to see what a plan typically covers.</p>
+      </div>
+      <ServiceRows items={primaryServices} />
+    </div>
+  </section>
+
+  <section class="section alt" aria-labelledby="add-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Additional services</p>
+        <h2 id="add-title">Specialized Work, Same Team</h2>
+      </div>
+      <ul role="list" class="add">
+        {
+          supportServices.map((s, i) => (
+            <li data-reveal style={`--d:${i}`}>
+              <a href={serviceHref(s.slug)}>
+                <div class="frame">
+                  <Photo photo={photos[s.hero]} sizes="(min-width: 48rem) 12rem, 30vw" widths={[240, 400]} aspect={1} />
+                </div>
+                <div>
+                  <h3>{s.name}</h3>
+                  <p class="muted">{s.summary}</p>
+                </div>
+                <Icon name="arrow" class="go" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <Process />
+  <Faq items={faqs} title="Questions About Our Services" />
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .add {
+    border-top: 1px solid var(--line);
+  }
+  .add a {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr auto;
+    gap: 1.25rem;
+    align-items: center;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+  }
+  @media (min-width: 48rem) {
+    .add a {
+      grid-template-columns: 9rem 1fr auto;
+      gap: 2.5rem;
+    }
+  }
+  .add .frame {
+    aspect-ratio: 1;
+  }
+  .add h3 {
+    font-size: var(--step-2);
+    margin-bottom: 0.3rem;
+    transition: transform 0.45s var(--ease-out);
+  }
+  .add :global(.go) {
+    width: 1.5rem;
+    height: 1.5rem;
+    transition: transform 0.45s var(--ease-out);
+  }
+  .add a:hover h3 {
+    transform: translateX(0.5rem);
+  }
+  .add a:hover :global(.go) {
+    transform: rotate(-45deg);
+  }
+</style>

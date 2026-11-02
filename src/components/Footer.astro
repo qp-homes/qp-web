@@ -1,0 +1,174 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/logo-on-dark.png';
+import Icon from './Icon.astro';
+import Skyline from './Skyline.astro';
+import { site } from '../data/site';
+import { primaryServices, supportServices, serviceHref } from '../data/services';
+import { areas } from '../data/areas';
+
+const year = new Date().getFullYear();
+const { street, city, region, postalCode } = site.address;
+---
+
+<footer class="site-footer dark" data-footer>
+  <Skyline tone="light" class="footer-skyline" />
+  <div class="container grid">
+    <div class="col brand-col">
+      <Image src={logo} alt={site.name} widths={[180, 300]} sizes="180px" class="logo" />
+      <p class="muted">
+        Commercial cleaning for retail stores, medical offices, and commercial buildings across Los Angeles County.
+      </p>
+    </div>
+
+    <nav class="col" aria-labelledby="f-services">
+      <h2 id="f-services" class="f-title">Services</h2>
+      <ul role="list">
+        {primaryServices.map((s) => <li><a href={serviceHref(s.slug)}>{s.navLabel}</a></li>)}
+        {supportServices.map((s) => <li><a href={serviceHref(s.slug)}>{s.navLabel}</a></li>)}
+      </ul>
+    </nav>
+
+    <nav class="col" aria-labelledby="f-company">
+      <h2 id="f-company" class="f-title">Company</h2>
+      <ul role="list">
+        <li><a href="/about/">About Quality Plus</a></li>
+        <li><a href="/commercial-cleaning-services/">All Services</a></li>
+        <li><a href="/service-areas/">Service Areas</a></li>
+        {areas.filter((a) => a.indexable).map((a) => <li><a href={`/service-areas/${a.slug}/`}>{a.name}</a></li>)}
+        <li><a href="/contact/">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="col">
+      <h2 class="f-title">Contact</h2>
+      <address>
+        <a href={site.phoneHref} class="c-line" data-track="click_to_call"><Icon name="phone" />{site.phone}</a>
+        <a href={`mailto:${site.email}`} class="c-line"><Icon name="mail" />{site.email}</a>
+        {
+          site.showAddress && (
+            <span class="c-line">
+              <Icon name="pin" />
+              <span>
+                {street}
+                <br />
+                {city}, {region} {postalCode}
+              </span>
+            </span>
+          )
+        }
+      </address>
+      <a href="/contact/" class="btn btn--sm f-cta">Request a Site Walkthrough <Icon name="arrow" /></a>
+    </div>
+  </div>
+
+  <div class="container legal">
+    <p>© {year} {site.name}. All rights reserved.</p>
+    <a href="/privacy-policy/">Privacy Policy</a>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    padding-top: clamp(5rem, 4rem + 5vw, 8rem);
+    overflow: hidden;
+  }
+  .footer-skyline {
+    position: absolute;
+    top: 0.5rem;
+    left: 0;
+    right: 0;
+    height: 5rem;
+    opacity: 0.8;
+  }
+  .grid {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: 1fr;
+    padding-bottom: 3.5rem;
+  }
+  @media (min-width: 40rem) {
+    .grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 64rem) {
+    .grid {
+      grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+      gap: 3rem;
+    }
+  }
+  .logo {
+    width: 180px;
+    height: auto;
+    margin-bottom: 1.25rem;
+  }
+  .brand-col p {
+    max-width: 22rem;
+  }
+  .f-title {
+    font-size: var(--step--1);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 650;
+    color: var(--orange);
+    margin-bottom: 1rem;
+    font-variation-settings: 'wdth' 110;
+  }
+  ul {
+    display: grid;
+    gap: 0.15rem;
+  }
+  ul a,
+  .legal a {
+    display: inline-block;
+    padding: 0.3rem 0;
+    text-decoration: none;
+    color: var(--on-dark-muted);
+    transition: color 0.2s;
+  }
+  ul a:hover,
+  .legal a:hover {
+    color: var(--on-dark);
+  }
+  address {
+    font-style: normal;
+    display: grid;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+  }
+  .c-line {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    text-decoration: none;
+    color: var(--on-dark);
+    overflow-wrap: anywhere;
+  }
+  a.c-line:hover {
+    text-decoration: underline;
+  }
+  .c-line svg {
+    flex: none;
+    width: 1.15rem;
+    height: 1.15rem;
+    margin-top: 0.2rem;
+    color: var(--orange);
+  }
+  .legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    justify-content: space-between;
+    padding-block: 1.5rem;
+    border-top: 1px solid var(--line-dark);
+    font-size: var(--step--1);
+    color: var(--on-dark-muted);
+  }
+  @media (max-width: 63.99rem) {
+    .site-footer {
+      padding-bottom: 4.5rem; /* room for the mobile action bar */
+    }
+  }
+</style>

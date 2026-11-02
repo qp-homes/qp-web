@@ -1,0 +1,485 @@
+---
+import Icon from './Icon.astro';
+import { services } from '../data/services';
+import { areas } from '../data/areas';
+
+/**
+ * Walkthrough request form — DEMO MODE.
+ * Validates in the browser and shows a clearly labelled demo confirmation.
+ * Nothing is sent or stored. See INTEGRATIONS_LATER.md for the real endpoint,
+ * server-side validation, spam protection, CRM routing and analytics events.
+ */
+const facilityTypes = ['Retail', 'Medical Office', 'Commercial Building', 'Other Commercial'];
+const sizes = ['Under 5,000 sq ft', '5,000–20,000 sq ft', '20,000–50,000 sq ft', 'Over 50,000 sq ft', 'Not sure'];
+const frequencies = ['Daily', 'Several times a week', 'Weekly', 'Every two weeks', 'Monthly', 'One-time service', 'Not sure yet'];
+---
+
+<form class="form" novalidate data-form data-mode="demo" aria-describedby="form-demo-note">
+  <div class="error-summary" role="alert" tabindex="-1" hidden data-error-summary>
+    <p><strong>Please review the highlighted fields.</strong></p>
+    <ul role="list" data-error-list></ul>
+  </div>
+
+  <fieldset>
+    <legend>Your business</legend>
+    <div class="row-2">
+      <div class="field">
+        <label for="business">Business name <span class="req">(required)</span></label>
+        <input id="business" name="business" type="text" autocomplete="organization" required maxlength="120" />
+        <p class="err" id="business-err" hidden></p>
+      </div>
+      <div class="field">
+        <label for="name">Contact name <span class="req">(required)</span></label>
+        <input id="name" name="name" type="text" autocomplete="name" required maxlength="120" />
+        <p class="err" id="name-err" hidden></p>
+      </div>
+      <div class="field">
+        <label for="email">Email <span class="req">(required)</span></label>
+        <input id="email" name="email" type="email" autocomplete="email" required maxlength="160" />
+        <p class="err" id="email-err" hidden></p>
+      </div>
+      <div class="field">
+        <label for="phone">Phone <span class="req">(required)</span></label>
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          autocomplete="tel"
+          required
+          inputmode="tel"
+          pattern="[0-9()+\-.\s]{10,20}"
+          aria-describedby="phone-hint"
+        />
+        <p class="hint" id="phone-hint">Example: (323) 555-0123</p>
+        <p class="err" id="phone-err" hidden></p>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Your facility</legend>
+    <div class="row-2">
+      <div class="field">
+        <label for="address">Property address or ZIP code <span class="req">(required)</span></label>
+        <input id="address" name="address" type="text" autocomplete="street-address" required maxlength="200" />
+        <p class="err" id="address-err" hidden></p>
+      </div>
+      <div class="field">
+        <label for="county">County <span class="req">(required)</span></label>
+        <select id="county" name="county" required>
+          <option value="">Select a county</option>
+          {areas.map((a) => <option value={a.name}>{a.name}</option>)}
+          <option value="Other">Other</option>
+        </select>
+        <p class="err" id="county-err" hidden></p>
+      </div>
+      <div class="field">
+        <label for="city">City <span class="opt">(optional)</span></label>
+        <input id="city" name="city" type="text" autocomplete="address-level2" maxlength="80" />
+      </div>
+      <div class="field">
+        <label for="size">Approximate size <span class="opt">(optional)</span></label>
+        <select id="size" name="size">
+          <option value="">Select a range</option>
+          {sizes.map((s) => <option>{s}</option>)}
+        </select>
+      </div>
+    </div>
+
+    <div class="field group" role="radiogroup" aria-labelledby="facility-label" aria-describedby="facility-err" data-group="facility">
+      <p id="facility-label" class="group-label">Facility type <span class="req">(required)</span></p>
+      <div class="choices">
+        {
+          facilityTypes.map((t, i) => (
+            <label class="choice">
+              <input type="radio" name="facility" value={t} required={i === 0} />
+              <span>{t}</span>
+            </label>
+          ))
+        }
+      </div>
+      <p class="err" id="facility-err" hidden></p>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>What you need</legend>
+    <div class="field group">
+      <p class="group-label" id="services-label">Services of interest <span class="opt">(optional)</span></p>
+      <div class="choices choices--3" role="group" aria-labelledby="services-label">
+        {
+          services.map((s) => (
+            <label class="choice">
+              <input type="checkbox" name="services" value={s.slug} data-service={s.slug} />
+              <span>{s.name}</span>
+            </label>
+          ))
+        }
+      </div>
+    </div>
+    <div class="row-2">
+      <div class="field">
+        <label for="frequency">Desired frequency <span class="opt">(optional)</span></label>
+        <select id="frequency" name="frequency">
+          <option value="">Select a frequency</option>
+          {frequencies.map((f) => <option>{f}</option>)}
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label for="message">Tell us about your facility <span class="opt">(optional)</span></label>
+      <textarea id="message" name="message" rows="5" maxlength="2000" aria-describedby="message-hint"></textarea>
+      <p class="hint" id="message-hint">
+        Hours, access, priority areas, timing. Please don’t include patient or medical information.
+      </p>
+    </div>
+  </fieldset>
+
+  <!-- Honeypot: hidden from people, tempting for bots. -->
+  <div class="hp" aria-hidden="true">
+    <label for="website">Leave this field empty</label>
+    <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="field consent">
+    <label class="choice choice--plain">
+      <input type="checkbox" name="consent" id="consent" required aria-describedby="consent-err" />
+      <span>
+        I agree that Quality Plus Building Services may contact me by phone or email about this request. See our
+        <a href="/privacy-policy/">Privacy Policy</a>. <span class="req">(required)</span>
+      </span>
+    </label>
+    <p class="err" id="consent-err" hidden></p>
+  </div>
+
+  <p class="demo-note" id="form-demo-note">
+    <strong>Demo form:</strong> this form is not connected yet. Nothing you enter is sent or stored. To reach our team
+    today, call <a href="tel:+13236600751">(323) 660-0751</a>.
+  </p>
+
+  <button type="submit" class="btn submit" data-submit>
+    Request a Site Walkthrough <Icon name="arrow" />
+  </button>
+
+  <div class="success" role="status" tabindex="-1" hidden data-success>
+    <h3>Demo submission complete</h3>
+    <p>
+      Your details passed validation, but <strong>nothing was sent</strong> because this form is in demo mode. When the
+      form is connected, this is where the confirmation will appear.
+    </p>
+    <a href="/thank-you/" class="link">Preview the thank-you page <Icon name="arrow" /></a>
+  </div>
+</form>
+
+<style>
+  .form {
+    display: grid;
+    gap: 2rem;
+  }
+  fieldset {
+    border: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+    min-width: 0;
+  }
+  legend {
+    font-size: var(--step-1);
+    font-weight: 720;
+    font-variation-settings: 'wdth' 110;
+    margin-bottom: 1rem;
+    padding: 0;
+  }
+  .row-2 {
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 40rem) {
+    .row-2 {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .field {
+    display: grid;
+    gap: 0.4rem;
+    align-content: start;
+  }
+  label,
+  .group-label {
+    font-weight: 600;
+    font-size: var(--step--1);
+  }
+  .req,
+  .opt {
+    font-weight: 400;
+    color: var(--muted);
+  }
+  input:not([type='radio'], [type='checkbox']),
+  select,
+  textarea {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.7rem 0.9rem;
+    border: 1.5px solid #8b929c;
+    border-radius: var(--radius);
+    background: var(--white);
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
+  textarea {
+    resize: vertical;
+    min-height: 8rem;
+  }
+  input:hover,
+  select:hover,
+  textarea:hover {
+    border-color: var(--ink);
+  }
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+    border-color: var(--ink);
+    box-shadow: 0 0 0 3px rgb(64 148 220 / 0.45);
+  }
+  [aria-invalid='true'] {
+    border-color: var(--danger) !important;
+  }
+  .hint {
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .err {
+    font-size: var(--step--1);
+    color: var(--danger);
+    font-weight: 600;
+  }
+  .choices {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: 0.6rem;
+  }
+  .choices--3 {
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  }
+  .choice {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-height: 3rem;
+    padding: 0.65rem 0.9rem;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--white);
+    font-weight: 560;
+    font-size: var(--step-0);
+    cursor: pointer;
+    transition:
+      border-color 0.2s,
+      background-color 0.2s;
+  }
+  .choice:hover {
+    border-color: var(--ink);
+  }
+  .choice:has(input:checked) {
+    border-color: var(--ink);
+    background: #fff4ec;
+  }
+  .choice:has(input:focus-visible) {
+    box-shadow: 0 0 0 3px rgb(64 148 220 / 0.45);
+  }
+  .choice input {
+    width: 1.15rem;
+    height: 1.15rem;
+    accent-color: var(--orange-ink);
+    flex: none;
+  }
+  .choice--plain {
+    align-items: flex-start;
+    border: 0;
+    padding: 0;
+    background: none !important;
+    font-weight: 400;
+    font-size: var(--step--1);
+  }
+  .choice--plain input {
+    margin-top: 0.2rem;
+  }
+  .group[data-invalid] .choice {
+    border-color: var(--danger);
+  }
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .demo-note {
+    padding: 0.9rem 1.1rem;
+    border: 1.5px dashed var(--orange-ink);
+    border-radius: var(--radius);
+    background: #fff4ec;
+    font-size: var(--step--1);
+  }
+  .submit {
+    justify-self: start;
+  }
+  .submit[disabled] {
+    opacity: 0.6;
+    cursor: progress;
+  }
+  .error-summary {
+    padding: 1rem 1.25rem;
+    border-left: 4px solid var(--danger);
+    background: #fdecea;
+  }
+  .error-summary ul {
+    margin-top: 0.4rem;
+    display: grid;
+    gap: 0.2rem;
+  }
+  .error-summary a {
+    color: var(--danger);
+    font-weight: 600;
+  }
+  .success {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    background: var(--ink);
+    color: var(--on-dark);
+  }
+  .success[hidden] {
+    display: none;
+  }
+  .success h3 {
+    font-size: var(--step-2);
+  }
+  .success .link {
+    color: var(--orange);
+    justify-self: start;
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-form]');
+  if (form) {
+    // Preselect a service when arriving from a service page (?service=retail-cleaning)
+    const preset = new URLSearchParams(location.search).get('service');
+    if (preset) {
+      const box = form.querySelector<HTMLInputElement>(`[data-service="${CSS.escape(preset)}"]`);
+      if (box) box.checked = true;
+    }
+
+    const summary = form.querySelector<HTMLElement>('[data-error-summary]')!;
+    const list = form.querySelector<HTMLElement>('[data-error-list]')!;
+    const success = form.querySelector<HTMLElement>('[data-success]')!;
+    const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    let lastSubmit = 0;
+
+    const labelFor = (el: HTMLElement) => {
+      if (el.getAttribute('name') === 'facility') return 'Facility type';
+      if (el.getAttribute('name') === 'consent') return 'Consent';
+      return form.querySelector(`label[for="${el.id}"]`)?.firstChild?.textContent?.trim() ?? el.id;
+    };
+
+    const messageFor = (el: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement) => {
+      const v = el.validity;
+      const name = labelFor(el);
+      if (el.name === 'facility') return 'Choose the type of facility.';
+      if (el.name === 'consent') return 'Please confirm we may contact you about this request.';
+      const lower = name.charAt(0).toLowerCase() + name.slice(1);
+      if (v.valueMissing) return el.tagName === 'SELECT' ? `Select a ${lower}.` : `Enter your ${lower}.`;
+      if (v.typeMismatch && el.type === 'email') return 'Enter an email address like name@company.com.';
+      if (v.patternMismatch && el.type === 'tel') return 'Enter a phone number with at least 10 digits.';
+      return 'Check this field.';
+    };
+
+    const setError = (key: string, el: HTMLElement, msg: string | null) => {
+      const err = form.querySelector<HTMLElement>(`#${key}-err`);
+      const group = el.closest<HTMLElement>('[data-group]');
+      if (group) group.toggleAttribute('data-invalid', Boolean(msg));
+      else el.setAttribute('aria-invalid', msg ? 'true' : 'false');
+      if (err) {
+        err.hidden = !msg;
+        err.textContent = msg ?? '';
+        const describedBy = new Set((el.getAttribute('aria-describedby') ?? '').split(' ').filter(Boolean));
+        msg ? describedBy.add(err.id) : describedBy.delete(err.id);
+        if (!group) el.setAttribute('aria-describedby', [...describedBy].join(' '));
+      }
+    };
+
+    const validate = () => {
+      const errors: { id: string; msg: string; el: Element }[] = [];
+      const fields = form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+        'input[required]:not([type=radio]), select[required], textarea[required]',
+      );
+      fields.forEach((el) => {
+        if (el.type !== 'checkbox') el.value = el.value.trim();
+        const msg = el.checkValidity() ? null : messageFor(el);
+        setError(el.id, el, msg);
+        if (msg) errors.push({ id: el.id, msg, el });
+      });
+      const radios = form.querySelectorAll<HTMLInputElement>('input[name="facility"]');
+      const picked = [...radios].some((r) => r.checked);
+      setError('facility', radios[0], picked ? null : messageFor(radios[0]));
+      if (!picked) errors.push({ id: 'facility', msg: messageFor(radios[0]), el: radios[0] });
+      // List errors in the order the fields appear on screen
+      return errors.sort((a, b) => (a.el.compareDocumentPosition(b.el) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
+    };
+
+    // Clear a field's error as soon as it becomes valid
+    form.addEventListener('input', (e) => {
+      const el = e.target as HTMLInputElement;
+      if (el.name === 'facility') return setError('facility', el, null);
+      if (el.getAttribute('aria-invalid') === 'true' && el.checkValidity()) setError(el.id, el, null);
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      success.hidden = true;
+
+      // Honeypot or rapid resubmission: silently ignore
+      const hp = form.querySelector<HTMLInputElement>('#website');
+      if (hp?.value || Date.now() - lastSubmit < 5000) return;
+
+      const errors = validate();
+      if (errors.length) {
+        list.replaceChildren(
+          ...errors.map(({ id, msg }) => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            const target = id === 'facility' ? 'facility-label' : id;
+            a.href = `#${target}`;
+            a.textContent = msg;
+            a.addEventListener('click', (ev) => {
+              ev.preventDefault();
+              const el = id === 'facility' ? form.querySelector<HTMLInputElement>('input[name=facility]') : document.getElementById(id);
+              el?.focus();
+            });
+            li.append(a);
+            return li;
+          }),
+        );
+        summary.hidden = false;
+        summary.focus();
+        return;
+      }
+
+      summary.hidden = true;
+      lastSubmit = Date.now();
+      submit.disabled = true;
+      // DEMO: no network request. Replace this block when the real endpoint exists
+      // and fire `generate_lead` only after a successful server response.
+      setTimeout(() => {
+        submit.disabled = false;
+        success.hidden = false;
+        success.focus();
+      }, 600);
+    });
+  }
+</script>

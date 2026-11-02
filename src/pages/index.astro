@@ -1,0 +1,990 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import Skyline from '../components/Skyline.astro';
+import Process from '../components/Process.astro';
+import Gallery from '../components/Gallery.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { photos, type PhotoKey } from '../data/photos';
+import { site, primaryCta } from '../data/site';
+import { primaryServices, supportServices, services, serviceHref } from '../data/services';
+import { areas, laCountyCities } from '../data/areas';
+
+const headline = 'Professional Commercial Cleaning Services in Los Angeles';
+
+// Full-bleed hero sequence. First slide is the LCP image.
+const heroSlides: { key: PhotoKey; position: string }[] = [
+  { key: 'twoMembersMopping', position: '50% 62%' },
+  { key: 'powerWashPatio', position: '50% 55%' },
+  { key: 'storefrontGlass', position: '50% 35%' },
+  { key: 'teamGroup', position: '50% 30%' },
+];
+
+const commitments = [
+  {
+    title: 'Owner-level oversight',
+    text: `Quality Plus is led by its founder, ${site.founder}, who stays close to daily operations and to the clients the team serves.`,
+  },
+  {
+    title: 'A plan for each facility',
+    text: 'Scope, frequency, and priorities are written for your property after we see it — not pulled from a generic checklist.',
+  },
+  {
+    title: 'Consistent communication',
+    text: 'You know who to call. Requests, schedule changes, and follow-ups go to a real person who knows your account.',
+  },
+  {
+    title: 'An identifiable team',
+    text: 'Our team works in Quality Plus uniforms, so your staff, tenants, and customers always know who is in the building.',
+  },
+];
+
+const gallery = [
+  { photo: 'teamGroup', caption: 'The Quality Plus team.' },
+  { photo: 'storefrontGlass', caption: 'Storefront glass, downtown Los Angeles.' },
+  { photo: 'fitnessRoom', caption: 'Building amenity: fitness room floor care.' },
+  { photo: 'powerWashPatio', caption: 'Patio power washing with a surface cleaner.' },
+  { photo: 'elevatorThreshold', caption: 'Detail work on an elevator threshold.' },
+  { photo: 'counterSanitizing', caption: 'Restroom counters and fixtures.' },
+  { photo: 'twoMembersMopping', caption: 'Large-floor cleaning in a commercial space.' },
+  { photo: 'archwayDusting', caption: 'High dusting on a building exterior.' },
+] as const;
+
+const faqs = [
+  {
+    q: 'What kinds of facilities do you clean?',
+    a: 'We focus on commercial facilities: retail stores, medical offices, office and multi-tenant buildings, and shared building amenities. We do not offer residential cleaning.',
+  },
+  {
+    q: 'Can we request a walkthrough before getting a proposal?',
+    a: 'Yes — that is how every new account starts. We visit your facility, review the scope and access, and then prepare a written proposal.',
+  },
+  {
+    q: 'Do you create custom cleaning schedules?',
+    a: 'Yes. Frequency and timing are set per area of your facility and around your operating hours. We confirm what is possible during the walkthrough.',
+  },
+  {
+    q: 'Which service areas do you cover?',
+    a: 'Los Angeles County is our primary service area. We also review projects in Orange County, San Bernardino County, and the San Diego area on a case-by-case basis.',
+  },
+  {
+    q: 'Can additional services be included in our plan?',
+    a: 'Yes. Power washing, window cleaning, and carpet cleaning can be added to a regular plan or scheduled on their own.',
+  },
+];
+
+const ticker = services.map((s) => s.name);
+---
+
+<BaseLayout
+  title="Commercial Cleaning Services Los Angeles | Quality Plus"
+  description="Quality Plus Building Services provides retail, medical office, and commercial building cleaning in Los Angeles. Request a site walkthrough."
+  heroOverlay
+>
+  <!-- ============ Hero ============ -->
+  <section class="hero" data-hero>
+    <div class="hero-bg" data-hero-bg aria-hidden="true">
+      {
+        heroSlides.map((s, i) => (
+          <div class="slide" style={`--i:${i}; --pos:${s.position}`}>
+            <Photo
+              photo={photos[s.key]}
+              decorative
+              priority={i === 0}
+              sizes="100vw"
+              widths={[640, 960, 1280, 1600, 2000]}
+            />
+          </div>
+        ))
+      }
+    </div>
+    <div class="hero-shade" aria-hidden="true"></div>
+
+    <div class="container hero-content" data-hero-content>
+      <p class="eyebrow">Commercial cleaning in Los Angeles</p>
+      <h1 aria-label={headline}>{headline.split(' ').map((w, i) => <><span class="w" aria-hidden="true"><span style={`--i:${i}`}>{w}</span></span>{' '}</>)}</h1>
+      <div class="hero-foot">
+        <p class="lead">
+          Reliable cleaning solutions for retail stores, medical offices, and commercial buildings. Tell us about your
+          facility, and our team will help you plan the right service.
+        </p>
+        <div class="btn-row" data-hide-mobile-bar>
+          <a href={primaryCta.href} class="btn" data-magnetic>{primaryCta.label} <Icon name="arrow" /></a>
+          <a href="/commercial-cleaning-services/" class="btn btn--ghost" data-magnetic>Explore Commercial Services</a>
+        </div>
+      </div>
+      <div class="hero-meta">
+        <p class="trust">
+          <Icon name="pin" />
+          <span>Based in Los Angeles · Serving businesses across Los Angeles County</span>
+        </p>
+        <span class="scroll-cue" aria-hidden="true"><span></span>Scroll</span>
+      </div>
+    </div>
+    <Skyline tone="light" class="hero-skyline" />
+  </section>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      {[0, 1].map(() => <span class="ticker-group">{ticker.map((t) => <span>{t}<i>✦</i></span>)}</span>)}
+    </div>
+  </div>
+
+  <!-- ============ Statement ============ -->
+  <section class="section statement-sec" aria-label="Our approach">
+    <div class="container">
+      <p class="eyebrow">Our approach</p>
+      <p class="statement" data-scrub-words>
+        Every facility runs differently. We walk it with you first — then build a cleaning plan your staff, tenants,
+        and customers will actually notice.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ Core services (pinned horizontal on desktop) ============ -->
+  <section class="svc dark" data-hscroll aria-labelledby="pillars-title">
+    <div class="svc-track" data-hscroll-track>
+      <div class="panel svc-intro">
+        <p class="eyebrow">Core services</p>
+        <h2 id="pillars-title">Commercial Cleaning Built Around Your Business</h2>
+        <p class="lead">
+          Three facility types, three different sets of priorities. Each plan starts with how your space is used — and
+          who walks through it every day.
+        </p>
+        <p class="hint" aria-hidden="true">Keep scrolling <Icon name="arrow" /></p>
+      </div>
+
+      {
+        primaryServices.map((s, i) => (
+          <article class="panel svc-panel" aria-labelledby={`svc-${s.slug}`}>
+            <a
+              href={serviceHref(s.slug)}
+              class="svc-media frame"
+              data-cursor="View"
+              tabindex="-1"
+              aria-hidden="true"
+              style={`view-transition-name: svc-${s.slug}`}
+            >
+              <div class="svc-img" data-hscroll-img>
+                <Photo photo={photos[s.hero]} decorative sizes="(min-width: 64rem) 45vw, 100vw" widths={[480, 800, 1200, 1600]} />
+              </div>
+            </a>
+            <div class="svc-copy">
+              <span class="svc-num">0{i + 1}</span>
+              <h3 id={`svc-${s.slug}`}>{s.name}</h3>
+              <p class="svc-sum">{s.summary}</p>
+              <ul role="list" class="tags">
+                {s.facilities.slice(0, 3).map((f) => <li class="tag">{f}</li>)}
+              </ul>
+              <a href={serviceHref(s.slug)} class="link svc-link">
+                Explore {s.name} <Icon name="arrow" />
+              </a>
+            </div>
+          </article>
+        ))
+      }
+
+      <div class="panel svc-end">
+        <p class="end-title">Not sure which plan fits your facility?</p>
+        <p class="muted">A walkthrough answers that in under an hour.</p>
+        <div class="btn-row">
+          <a href={primaryCta.href} class="btn" data-magnetic>{primaryCta.label} <Icon name="arrow" /></a>
+        </div>
+        <a href="/commercial-cleaning-services/" class="link">All commercial services <Icon name="arrow" /></a>
+      </div>
+    </div>
+    <div class="svc-progress" aria-hidden="true"><span data-hscroll-progress></span></div>
+  </section>
+
+  <!-- ============ Supporting services ============ -->
+  <section class="section alt" aria-labelledby="support-title">
+    <div class="container">
+      <div class="section-head section-head--split">
+        <div>
+          <p class="eyebrow">Additional services</p>
+          <h2 id="support-title">Additional Facility Cleaning Solutions</h2>
+        </div>
+        <p class="lead">
+          Add specialized work to your regular plan, or schedule it on its own — with the same team you already know.
+        </p>
+      </div>
+      <ul role="list" class="support">
+        {
+          supportServices.map((s, i) => (
+            <li class="support-item">
+              <a href={serviceHref(s.slug)} data-cursor="View">
+                <div class="frame" data-clip>
+                  <Photo photo={photos[s.hero]} sizes="(min-width: 64rem) 30vw, (min-width: 40rem) 45vw, 100vw" widths={[480, 720, 960]} aspect={4 / 5} />
+                </div>
+                <span class="index">0{i + 1}</span>
+                <h3>{s.name}</h3>
+                <p class="muted">{s.summary}</p>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ Why Quality Plus ============ -->
+  <section class="section why" aria-labelledby="why-title">
+    <div class="container why-grid">
+      <div class="why-media">
+        <div class="frame why-main" data-clip>
+          <Photo photo={photos.officeTeamKarla} sizes="(min-width: 64rem) 36vw, 90vw" widths={[480, 720, 960, 1200]} aspect={4 / 5} />
+        </div>
+        <div class="frame why-inset" data-parallax="-0.06">
+          <Photo photo={photos.twoMembersOrangeWall} sizes="(min-width: 64rem) 16vw, 40vw" widths={[320, 480, 640]} aspect={3 / 4} />
+        </div>
+      </div>
+      <div class="why-copy">
+        <p class="eyebrow">Why Quality Plus</p>
+        <h2 id="why-title">Experience, Accountability, and Attention to Detail</h2>
+        <p class="lead">
+          Larger companies can feel distant. We stay close: the people who plan your service are the people who answer
+          your call.
+        </p>
+        <ol role="list" class="commitments">
+          {
+            commitments.map((c, i) => (
+              <li data-reveal style={`--d:${i}`}>
+                <span class="index">0{i + 1}</span>
+                <div>
+                  <h3>{c.title}</h3>
+                  <p class="muted">{c.text}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+        <a href="/about/" class="link">Meet Quality Plus <Icon name="arrow" /></a>
+      </div>
+    </div>
+  </section>
+
+  <Process />
+
+  <!-- ============ Coverage ============ -->
+  <section class="section coverage" aria-labelledby="coverage-title">
+    <Skyline class="cov-line" />
+    <div class="container cov-grid">
+      <div>
+        <p class="eyebrow">Service coverage</p>
+        <h2 id="coverage-title">Commercial Cleaning Across the Los Angeles Area</h2>
+        <p class="lead">
+          Los Angeles County is our home and primary service area — from Downtown LA and the Westside to the San Gabriel
+          Valley, the South Bay, and the Antelope Valley.
+        </p>
+        <p class="big-count" aria-hidden="true">{laCountyCities.length}<span>cities in LA County</span></p>
+        <div class="btn-row">
+          <a href="/service-areas/los-angeles-county/" class="btn btn--ghost" data-magnetic>
+            Check cities in LA County <Icon name="arrow" />
+          </a>
+        </div>
+      </div>
+      <ul role="list" class="regions">
+        {
+          areas.map((a, i) => (
+            <li data-reveal style={`--d:${i}`}>
+              <a href={`/service-areas/${a.slug}/`}>
+                <span class="r-name">{a.name}</span>
+                <span class:list={['r-status', { primary: a.indexable }]}>
+                  {a.indexable ? `Primary area · ${laCountyCities.length} cities` : 'Projects reviewed by request'}
+                </span>
+                <Icon name="arrow" class="r-go" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ Proof ============ -->
+  <section class="section alt proof" aria-labelledby="proof-title">
+    <div class="container section-head section-head--split">
+      <div>
+        <p class="eyebrow">Real people, real work</p>
+        <h2 id="proof-title">See the Team Behind the Work</h2>
+      </div>
+      <p class="lead">
+        Every photo on this site shows our own team on the job. No stock models — just the people who would be cleaning
+        your facility.
+      </p>
+    </div>
+    <Gallery items={[...gallery]} label="Photos of the Quality Plus team at work" />
+  </section>
+
+  <Faq items={faqs} />
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  /* ================= Hero ================= */
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    align-items: end;
+    padding: calc(var(--header-h) + 3rem) 0 clamp(2.5rem, 2rem + 3vw, 4.5rem);
+    background: var(--ink);
+    color: var(--on-dark);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: -4% 0 0;
+    z-index: -2;
+    transform-origin: 50% 0;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+  }
+  .slide:first-child {
+    opacity: 1;
+  }
+  .slide :global(img),
+  .slide :global(picture) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--pos);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .slide {
+      animation: slide 28s linear infinite both;
+      animation-delay: calc(var(--i) * 7s - 1s);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .slide {
+      animation: none !important;
+    }
+  }
+  @keyframes slide {
+    0% {
+      opacity: 0;
+      transform: scale(1.12);
+    }
+    4% {
+      opacity: 1;
+    }
+    25% {
+      opacity: 1;
+    }
+    30% {
+      opacity: 0;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1);
+    }
+  }
+  .hero-shade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(180deg, rgb(20 32 46 / 0.7) 0%, rgb(20 32 46 / 0.2) 32%, rgb(20 32 46 / 0.55) 62%, rgb(20 32 46 / 0.96) 100%),
+      linear-gradient(90deg, rgb(20 32 46 / 0.75) 0%, rgb(20 32 46 / 0) 70%);
+  }
+  .hero-content {
+    display: grid;
+    gap: clamp(1.25rem, 1rem + 1vw, 2rem);
+  }
+  .hero .eyebrow {
+    color: var(--orange);
+  }
+  .hero h1 {
+    font-size: clamp(2.7rem, 1.2rem + 6.2vw, 7.6rem);
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+    max-width: 13ch;
+    font-variation-settings: 'wdth' 118;
+    font-weight: 780;
+  }
+  .w {
+    display: inline-block;
+    overflow: clip;
+    vertical-align: top;
+    padding-bottom: 0.06em;
+  }
+  .w > span {
+    display: inline-block;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .w > span {
+      animation: rise-word 1.2s var(--ease-out) both;
+      animation-delay: calc(150ms + var(--i) * 65ms);
+    }
+  }
+  @keyframes rise-word {
+    from {
+      transform: translateY(105%) rotate(4deg);
+    }
+  }
+  .hero-foot {
+    display: grid;
+    gap: 1.5rem;
+    align-items: end;
+  }
+  @media (min-width: 64rem) {
+    .hero-foot {
+      grid-template-columns: minmax(0, 34rem) auto;
+      justify-content: space-between;
+    }
+  }
+  .hero .lead {
+    color: rgb(246 244 239 / 0.86);
+  }
+  .hero .btn--ghost {
+    --btn-fg: var(--on-dark);
+    border-color: rgb(246 244 239 / 0.55);
+  }
+  .hero .btn--ghost:hover {
+    background: var(--on-dark);
+    color: var(--ink);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-foot,
+    .hero-meta,
+    .hero .eyebrow {
+      animation: fade-up 1s 0.75s var(--ease-out) both;
+    }
+  }
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+  }
+  .hero-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgb(255 255 255 / 0.16);
+  }
+  .trust {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: var(--step--1);
+    color: var(--on-dark-muted);
+  }
+  .trust :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+    color: var(--orange);
+    flex: none;
+  }
+  .scroll-cue {
+    display: none;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: var(--step--1);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--on-dark-muted);
+  }
+  .scroll-cue span {
+    position: relative;
+    width: 1px;
+    height: 2.5rem;
+    background: rgb(255 255 255 / 0.25);
+    overflow: hidden;
+  }
+  .scroll-cue span::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--orange);
+    transform: translateY(-100%);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-cue span::after {
+      animation: cue 2.2s var(--ease-in-out) infinite;
+    }
+  }
+  @keyframes cue {
+    50% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(100%);
+    }
+  }
+  @media (min-width: 48rem) {
+    .scroll-cue {
+      display: inline-flex;
+    }
+  }
+  .hero-skyline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 5.5rem;
+    height: clamp(4rem, 3rem + 6vw, 10rem);
+    z-index: -1;
+    opacity: 0.6;
+  }
+
+  /* ================= Ticker ================= */
+  .ticker {
+    overflow: hidden;
+    background: var(--orange);
+    color: var(--ink);
+    padding-block: 0.95rem;
+    border-block: 1px solid rgb(20 32 46 / 0.15);
+  }
+  .ticker-track {
+    display: flex;
+    width: max-content;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ticker-track {
+      animation: marquee 38s linear infinite;
+    }
+  }
+  .ticker-group {
+    display: flex;
+  }
+  .ticker-group > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.6rem;
+    padding-right: 1.6rem;
+    font-size: var(--step-1);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    font-variation-settings: 'wdth' 115;
+    white-space: nowrap;
+  }
+  .ticker i {
+    font-style: normal;
+    font-size: 0.7em;
+  }
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* ================= Statement ================= */
+  .statement-sec .container {
+    display: grid;
+    gap: 2rem;
+  }
+  .statement {
+    font-size: clamp(1.9rem, 1.1rem + 3.4vw, 4.6rem);
+    line-height: 1.08;
+    font-weight: 680;
+    letter-spacing: -0.035em;
+    font-variation-settings: 'wdth' 112;
+    max-width: 22ch;
+    text-wrap: balance;
+  }
+  .statement :global(.sw) {
+    display: inline;
+  }
+
+  /* ================= Pinned services ================= */
+  .svc {
+    position: relative;
+    overflow: hidden;
+    padding-block: var(--section);
+  }
+  .svc-track {
+    display: grid;
+    gap: clamp(3.5rem, 3rem + 3vw, 6rem);
+    width: min(100% - 2 * var(--gutter), var(--max));
+    margin-inline: auto;
+  }
+  .svc-intro {
+    display: grid;
+    gap: 1.25rem;
+    align-content: center;
+  }
+  .svc-intro h2 {
+    font-size: clamp(2.2rem, 1.6rem + 2.8vw, 4.4rem);
+  }
+  .hint {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 620;
+    color: var(--orange);
+  }
+  .hint :global(svg) {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+  .svc-panel {
+    display: grid;
+    gap: 1.75rem;
+  }
+  .svc-media {
+    display: block;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+    background: var(--ink-3);
+  }
+  .svc-img {
+    position: absolute;
+    inset: 0 -9%;
+  }
+  .svc-img :global(img),
+  .svc-img :global(picture) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .svc-copy {
+    display: grid;
+    gap: 1rem;
+    align-content: center;
+    justify-items: start;
+  }
+  .svc-num {
+    font-size: clamp(3.5rem, 2rem + 6vw, 8rem);
+    line-height: 0.8;
+    font-weight: 800;
+    font-variation-settings: 'wdth' 125;
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgb(64 148 220 / 0.85);
+  }
+  .svc-copy h3 {
+    font-size: clamp(2rem, 1.4rem + 2.4vw, 3.6rem);
+  }
+  .svc-sum {
+    font-size: var(--step-1);
+    color: var(--on-dark-muted);
+    max-width: 30rem;
+  }
+  .svc-link {
+    color: var(--orange);
+    margin-top: 0.5rem;
+  }
+  .svc-end {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+    align-content: center;
+    padding: clamp(1.75rem, 1rem + 3vw, 3.5rem);
+    border: 1px solid var(--line-dark);
+    border-radius: var(--radius-lg);
+  }
+  .end-title {
+    font-size: var(--step-3);
+    font-weight: 740;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    font-variation-settings: 'wdth' 112;
+    max-width: 14ch;
+  }
+  .svc-end .link {
+    color: var(--on-dark);
+  }
+  .svc-progress {
+    display: none;
+  }
+  @media (min-width: 48rem) {
+    .svc-panel {
+      grid-template-columns: 1.2fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+  }
+
+  /* Pinned layout — only applied by motion.ts on desktop */
+  .svc:global(.is-pinned) {
+    height: 100vh;
+    padding: 0;
+  }
+  .svc:global(.is-pinned) .svc-track {
+    display: flex;
+    align-items: center;
+    gap: 6vw;
+    width: max-content;
+    height: 100vh;
+    margin: 0;
+    padding: calc(var(--header-h) + 2rem) 8vw 3rem max(var(--gutter), calc((100vw - var(--max)) / 2));
+    will-change: transform;
+  }
+  .svc:global(.is-pinned) .svc-intro {
+    width: min(34rem, 36vw);
+  }
+  .svc:global(.is-pinned) .hint {
+    display: inline-flex;
+  }
+  .svc:global(.is-pinned) .svc-panel {
+    width: min(76vw, 74rem);
+    grid-template-columns: 1.25fr 1fr;
+    gap: 4vw;
+  }
+  .svc:global(.is-pinned) .svc-media {
+    aspect-ratio: auto;
+    height: min(68vh, 44rem);
+  }
+  .svc:global(.is-pinned) .svc-end {
+    width: min(30rem, 34vw);
+  }
+  .svc:global(.is-pinned) .svc-progress {
+    display: block;
+    position: absolute;
+    left: max(var(--gutter), calc((100vw - var(--max)) / 2));
+    right: max(var(--gutter), calc((100vw - var(--max)) / 2));
+    bottom: 2.25rem;
+    height: 2px;
+    background: var(--line-dark);
+  }
+  .svc-progress span {
+    display: block;
+    height: 100%;
+    background: var(--orange);
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+
+  /* ================= Supporting services ================= */
+  .support {
+    display: grid;
+    gap: 3rem 1.5rem;
+  }
+  @media (min-width: 40rem) {
+    .support {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 64rem) {
+    .support {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+    .support-item:nth-child(2) {
+      margin-top: 6rem;
+    }
+    .support-item:nth-child(3) {
+      margin-top: 3rem;
+    }
+  }
+  .support-item a {
+    display: grid;
+    gap: 0.6rem;
+    text-decoration: none;
+  }
+  .support-item .frame {
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-lg);
+    margin-bottom: 0.75rem;
+  }
+  .support-item :global(img) {
+    transition: transform 1s var(--ease-out);
+  }
+  .support-item a:hover :global(img) {
+    transform: scale(1.05);
+  }
+  .support-item .index {
+    color: var(--orange-ink);
+  }
+  .support-item h3 {
+    font-size: var(--step-3);
+    transition: transform 0.5s var(--ease-out);
+  }
+  .support-item a:hover h3 {
+    transform: translateX(0.4rem);
+  }
+
+  /* ================= Why ================= */
+  .why-grid {
+    display: grid;
+    gap: 3.5rem;
+    align-items: center;
+  }
+  @media (min-width: 64rem) {
+    .why-grid {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 6rem;
+    }
+  }
+  .why-media {
+    position: relative;
+    padding: 0 3rem 4rem 0;
+    max-width: 32rem;
+  }
+  .why-main {
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-lg);
+  }
+  .why-inset {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 42%;
+    aspect-ratio: 3 / 4;
+    border: 6px solid var(--paper);
+    border-radius: var(--radius-lg);
+  }
+  .why-copy {
+    display: grid;
+    gap: 1.5rem;
+    justify-items: start;
+  }
+  .commitments {
+    display: grid;
+    width: 100%;
+    border-top: 1px solid var(--line);
+  }
+  .commitments li {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .commitments .index {
+    color: var(--orange-ink);
+    padding-top: 0.2rem;
+  }
+  .commitments h3 {
+    font-size: var(--step-1);
+    margin-bottom: 0.35rem;
+  }
+  [data-parallax] {
+    will-change: transform;
+  }
+
+  /* ================= Coverage ================= */
+  .coverage {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .cov-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 8rem;
+    z-index: -1;
+    opacity: 0.5;
+  }
+  .cov-grid {
+    display: grid;
+    gap: 3rem;
+  }
+  .cov-grid > div {
+    display: grid;
+    gap: 1.4rem;
+    align-content: start;
+    justify-items: start;
+  }
+  @media (min-width: 64rem) {
+    .cov-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+  }
+  .big-count {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    font-size: clamp(4rem, 2.5rem + 6vw, 8.5rem);
+    line-height: 0.85;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    font-variation-settings: 'wdth' 125;
+    color: var(--orange);
+  }
+  .big-count span {
+    font-size: var(--step-0);
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--muted);
+    font-variation-settings: 'wdth' 100;
+  }
+  .regions {
+    border-top: 1px solid var(--line);
+  }
+  .regions a {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: 'name go' 'status go';
+    gap: 0.2rem 1rem;
+    align-items: center;
+    padding: 1.4rem 0;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+  }
+  .r-name {
+    grid-area: name;
+    font-size: var(--step-2);
+    font-weight: 720;
+    letter-spacing: -0.02em;
+    font-variation-settings: 'wdth' 112;
+    transition: transform 0.45s var(--ease-out);
+  }
+  .r-status {
+    grid-area: status;
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .r-status.primary {
+    color: var(--orange-ink);
+    font-weight: 650;
+  }
+  .regions :global(.r-go) {
+    grid-area: go;
+    width: 1.4rem;
+    height: 1.4rem;
+    transition: transform 0.45s var(--ease-out);
+  }
+  .regions a:hover .r-name {
+    transform: translateX(0.5rem);
+  }
+  .regions a:hover :global(.r-go) {
+    transform: rotate(-45deg);
+  }
+
+  .proof .section-head {
+    margin-bottom: 2rem;
+  }
+</style>
+
+<script>
+  import '../scripts/motion';
+
+  // Light parallax for the inset photo (independent of GSAP; skipped for reduced motion / small screens)
+  const els = [...document.querySelectorAll<HTMLElement>('[data-parallax]')];
+  const ok = window.matchMedia('(prefers-reduced-motion: no-preference) and (min-width: 48rem)');
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const vh = window.innerHeight;
+    els.forEach((el) => {
+      if (!ok.matches) return void (el.style.transform = '');
+      const r = el.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > vh) return;
+      el.style.transform = `translate3d(0, ${((r.top + r.height / 2 - vh / 2) * Number(el.dataset.parallax)).toFixed(1)}px, 0)`;
+    });
+  };
+  if (els.length) {
+    update();
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    }, { passive: true });
+  }
+</script>

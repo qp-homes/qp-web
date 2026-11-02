@@ -1,0 +1,177 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import ContactForm from '../components/ContactForm.astro';
+import Icon from '../components/Icon.astro';
+import Photo from '../components/Photo.astro';
+import { photos } from '../data/photos';
+import { site } from '../data/site';
+
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Contact', href: '/contact/' },
+];
+const { street, city, region, postalCode } = site.address;
+---
+
+<BaseLayout
+  title="Request a Site Walkthrough | Contact Quality Plus"
+  description="Contact Quality Plus Building Services to request a site walkthrough for commercial cleaning in Los Angeles. Call (323) 660-0751 or send your facility details."
+  breadcrumbs={breadcrumbs}
+>
+  <section class="contact">
+    <div class="container">
+      <Breadcrumbs items={breadcrumbs} />
+      <div class="grid">
+        <div class="intro">
+          <p class="eyebrow">Contact</p>
+          <h1>Request a Site Walkthrough</h1>
+          <p class="lead">
+            Tell us about your facility. We’ll review the details, contact you to schedule a walkthrough, and prepare a
+            proposal based on what we see.
+          </p>
+
+          <ol role="list" class="next">
+            <li><span class="index">01</span> Send your facility details</li>
+            <li><span class="index">02</span> We contact you to schedule a walkthrough</li>
+            <li><span class="index">03</span> You receive a customized proposal</li>
+          </ol>
+
+          <div class="direct">
+            <h2>Prefer to talk?</h2>
+            <a href={site.phoneHref} class="big-phone" data-track="click_to_call">
+              <Icon name="phone" />
+              {site.phone}
+            </a>
+            <a href={`mailto:${site.email}`} class="line"><Icon name="mail" />{site.email}</a>
+            {
+              site.showAddress && (
+                <p class="line">
+                  <Icon name="pin" />
+                  <span>
+                    {street}, {city}, {region} {postalCode}
+                  </span>
+                </p>
+              )
+            }
+          </div>
+
+          <div class="frame side-photo">
+            <Photo photo={photos.twoMembersOrangeWall} sizes="(min-width: 64rem) 30vw, 90vw" widths={[400, 640, 800]} aspect={4 / 3} />
+          </div>
+        </div>
+
+        <div class="form-card" data-hide-mobile-bar>
+          <h2 class="form-title">Facility details</h2>
+          <ContactForm />
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact {
+    padding-block: 1.5rem var(--section);
+  }
+  .grid {
+    display: grid;
+    gap: 3rem;
+    margin-top: 2.5rem;
+  }
+  @media (min-width: 64rem) {
+    .grid {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    .intro {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+  .intro {
+    display: grid;
+    gap: 1.5rem;
+  }
+  h1 {
+    font-size: var(--step-5);
+  }
+  .next {
+    border-top: 1px solid var(--line);
+  }
+  .next li {
+    display: flex;
+    gap: 1rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--line);
+    font-weight: 560;
+  }
+  .next .index {
+    color: var(--orange-ink);
+  }
+  .direct {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .direct h2 {
+    font-size: var(--step-1);
+  }
+  .big-phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: var(--step-3);
+    font-weight: 760;
+    letter-spacing: -0.02em;
+    font-variation-settings: 'wdth' 112;
+    text-decoration: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .big-phone:hover {
+    color: var(--orange-ink);
+  }
+  .big-phone svg {
+    width: 1.6rem;
+    height: 1.6rem;
+    color: var(--orange-ink);
+  }
+  .line {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    color: var(--ink-2);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+  a.line:hover {
+    text-decoration: underline;
+  }
+  .line svg {
+    flex: none;
+    width: 1.15rem;
+    height: 1.15rem;
+    margin-top: 0.25rem;
+    color: var(--orange-ink);
+  }
+  .side-photo {
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+    display: none;
+  }
+  @media (min-width: 64rem) {
+    .side-photo {
+      display: block;
+    }
+  }
+  .form-card {
+    padding: clamp(1.25rem, 0.5rem + 3vw, 2.75rem);
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+  }
+  .form-title {
+    font-size: var(--step-2);
+    margin-bottom: 1.5rem;
+  }
+</style>

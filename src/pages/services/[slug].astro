@@ -1,0 +1,307 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Photo from '../../components/Photo.astro';
+import Icon from '../../components/Icon.astro';
+import Process from '../../components/Process.astro';
+import Faq from '../../components/Faq.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { photos } from '../../data/photos';
+import { services, getService, serviceHref, type Service } from '../../data/services';
+import { serviceSchema } from '../../data/schema';
+
+export function getStaticPaths() {
+  return services.map((s) => ({ params: { slug: s.slug }, props: { service: s } }));
+}
+
+const { service } = Astro.props as { service: Service };
+const href = serviceHref(service.slug);
+const base = Astro.site ?? new URL(Astro.url.origin);
+const related = service.related.map(getService).filter((s): s is Service => Boolean(s));
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Services', href: '/commercial-cleaning-services/' },
+  { name: service.name, href },
+];
+const cta = { label: 'Request a Site Walkthrough', href: `/contact/?service=${service.slug}` };
+---
+
+<BaseLayout
+  title={service.title}
+  description={service.description}
+  breadcrumbs={breadcrumbs}
+  schema={[serviceSchema({ name: service.name, description: service.description, href }, base)]}
+>
+  <PageHero
+    eyebrow={service.tier === 'primary' ? 'Core service' : 'Additional service'}
+    title={service.h1}
+    lead={service.intro[0]}
+    breadcrumbs={breadcrumbs}
+    photo={photos[service.hero]}
+    cta={cta}
+    vtName={`svc-${service.slug}`}
+  />
+
+  <section class="section" aria-labelledby="fit-title">
+    <div class="container fit">
+      <div class="prose">
+        <p class="eyebrow">Who it’s for</p>
+        <h2 id="fit-title">Facilities We Serve</h2>
+        <p class="lead">{service.intro[1]}</p>
+      </div>
+      <ul role="list" class="facility-list">
+        {
+          service.facilities.map((f, i) => (
+            <li data-reveal style={`--d:${i}`}>
+              <span class="index">0{i + 1}</span>
+              {f}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section alt" aria-labelledby="scope-title">
+    <div class="container scope">
+      <div class="scope-copy">
+        <p class="eyebrow">Scope</p>
+        <h2 id="scope-title">{service.scopeHeading}</h2>
+        <ul role="list" class="checklist">
+          {service.scope.map((item) => <li>{item}</li>)}
+        </ul>
+        <p class="muted small">
+          Every facility is different. Your final scope, frequency, and schedule are confirmed in writing after the site
+          walkthrough.
+        </p>
+      </div>
+      <div class:list={['scope-media', `n-${service.gallery.length}`]}>
+        {
+          service.gallery.map((key, i) => (
+            <div class="frame" data-reveal style={`--d:${i}`}>
+              <Photo photo={photos[key]} sizes="(min-width: 64rem) 25vw, 50vw" widths={[400, 640, 900]} aspect={4 / 5} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="plan-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Our approach</p>
+        <h2 id="plan-title">{service.planHeading}</h2>
+      </div>
+      <ol role="list" class:list={['plan', `cols-${service.plan.length}`]}>
+        {
+          service.plan.map((p, i) => (
+            <li data-reveal style={`--d:${i}`}>
+              <span class="index">0{i + 1}</span>
+              <h3>{p.title}</h3>
+              <p class="muted">{p.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      {
+        service.note && (
+          <aside class="note" aria-label="Service scope note">
+            <p>
+              <strong>Please note:</strong> {service.note}
+            </p>
+          </aside>
+        )
+      }
+    </div>
+  </section>
+
+  <Process />
+
+  <Faq items={service.faqs} title={`${service.name} Questions`} />
+
+  <section class="section alt" aria-labelledby="related-title">
+    <div class="container">
+      <div class="section-head section-head--split">
+        <div>
+          <p class="eyebrow">Related</p>
+          <h2 id="related-title">Combine With Other Services</h2>
+        </div>
+        <p class="lead">
+          Serving a facility in Los Angeles County? See our <a href="/service-areas/los-angeles-county/">LA County service area</a>
+          or browse <a href="/commercial-cleaning-services/">all commercial services</a>.
+        </p>
+      </div>
+      <ul role="list" class="related">
+        {
+          related.map((r) => (
+            <li>
+              <a href={serviceHref(r.slug)}>
+                <span class="r-tier">{r.tier === 'primary' ? 'Core service' : 'Additional service'}</span>
+                <h3>{r.name}</h3>
+                <p class="muted">{r.summary}</p>
+                <Icon name="arrow" class="r-go" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand title={`Plan Your ${service.name}`} cta={cta} />
+</BaseLayout>
+
+<style>
+  .fit {
+    display: grid;
+    gap: 3rem;
+  }
+  .fit .prose {
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 64rem) {
+    .fit {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 6rem;
+      align-items: start;
+    }
+  }
+  .facility-list {
+    border-top: 1px solid var(--line);
+  }
+  .facility-list li {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--line);
+    font-size: var(--step-1);
+    font-weight: 560;
+  }
+  .facility-list .index {
+    color: var(--orange-ink);
+    padding-top: 0.2rem;
+  }
+
+  .scope {
+    display: grid;
+    gap: 3rem;
+  }
+  @media (min-width: 64rem) {
+    .scope {
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+  }
+  .scope-copy {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .scope-copy h2 {
+    font-size: var(--step-3);
+    margin-bottom: 0.5rem;
+  }
+  .small {
+    font-size: var(--step--1);
+  }
+  .scope-media {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .scope-media .frame {
+    aspect-ratio: 4 / 5;
+  }
+  .scope-media.n-1 {
+    grid-template-columns: 1fr;
+    max-width: 28rem;
+  }
+  .scope-media.n-3 .frame:first-child {
+    grid-row: span 2;
+    aspect-ratio: auto;
+  }
+  .scope-media.n-2 .frame:last-child {
+    margin-top: 3rem;
+  }
+
+  .plan {
+    display: grid;
+    gap: 2rem;
+    border-top: 2px solid var(--ink);
+    padding-top: 2rem;
+  }
+  @media (min-width: 48rem) {
+    .plan.cols-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .plan.cols-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .plan {
+      gap: 3rem;
+    }
+  }
+  .plan li {
+    display: grid;
+    gap: 0.6rem;
+    align-content: start;
+  }
+  .plan .index {
+    color: var(--orange-ink);
+  }
+  .note {
+    margin-top: 3rem;
+    padding: 1.25rem 1.5rem;
+    border-left: 4px solid var(--sky);
+    background: var(--white);
+    max-width: 52rem;
+  }
+
+  .related {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 48rem) {
+    .related {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .related a {
+    position: relative;
+    display: grid;
+    gap: 0.6rem;
+    height: 100%;
+    padding: 1.75rem 1.5rem 3.75rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    transition:
+      border-color 0.3s,
+      transform 0.4s var(--ease-out);
+  }
+  .related a:hover {
+    border-color: var(--ink);
+    transform: translateY(-4px);
+  }
+  .r-tier {
+    font-size: var(--step--1);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange-ink);
+    font-weight: 620;
+  }
+  .related :global(.r-go) {
+    position: absolute;
+    left: 1.5rem;
+    bottom: 1.5rem;
+    width: 1.4rem;
+    height: 1.4rem;
+    transition: transform 0.4s var(--ease-out);
+  }
+  .related a:hover :global(.r-go) {
+    transform: translateX(6px);
+  }
+</style>

@@ -1,0 +1,116 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  title?: string;
+  eyebrow?: string;
+  items: { q: string; a: string }[];
+  id?: string;
+}
+const { title = 'Commercial Cleaning Questions', eyebrow = 'FAQ', items, id = 'faq' } = Astro.props;
+---
+
+<section class="section faq" aria-labelledby={`${id}-title`}>
+  <div class="container grid">
+    <div class="head">
+      <p class="eyebrow">{eyebrow}</p>
+      <h2 id={`${id}-title`}>{title}</h2>
+      <p class="muted">
+        Don’t see your question? <a href="/contact/">Contact our team</a> and we’ll answer it directly.
+      </p>
+    </div>
+    <div class="list">
+      {
+        items.map((item, i) => (
+          <details name={id} data-reveal style={`--d:${i}`}>
+            <summary>
+              <span>{item.q}</span>
+              <Icon name="plus" class="plus" />
+            </summary>
+            <div class="answer">
+              <p>{item.a}</p>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 64rem) {
+    .grid {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 5rem;
+    }
+    .head {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+      align-self: start;
+    }
+  }
+  .head {
+    display: grid;
+    gap: 1.1rem;
+  }
+  .head h2 {
+    font-size: var(--step-4);
+  }
+  .list {
+    border-top: 1px solid var(--line);
+  }
+  details {
+    border-bottom: 1px solid var(--line);
+  }
+  summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.35rem 0;
+    cursor: pointer;
+    list-style: none;
+    font-size: var(--step-1);
+    font-weight: 620;
+    line-height: 1.35;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary:hover span {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+  }
+  .plus {
+    flex: none;
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--orange-ink);
+    transition: transform 0.4s var(--ease-out);
+  }
+  details[open] .plus {
+    transform: rotate(45deg);
+  }
+  .answer {
+    padding: 0 3rem 1.5rem 0;
+    color: var(--ink-2);
+    max-width: 44rem;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    details::details-content {
+      block-size: 0;
+      overflow: clip;
+      transition:
+        block-size 0.45s var(--ease-out),
+        content-visibility 0.45s allow-discrete;
+    }
+    details[open]::details-content {
+      block-size: auto;
+    }
+  }
+</style>

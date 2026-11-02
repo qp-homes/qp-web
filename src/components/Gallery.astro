@@ -1,0 +1,118 @@
+---
+import Photo from './Photo.astro';
+import Icon from './Icon.astro';
+import { photos, type PhotoKey } from '../data/photos';
+
+/** Horizontal, scroll-snapping strip of real job photos. Keyboard and touch friendly. */
+interface Props {
+  items: { photo: PhotoKey; caption: string }[];
+  label: string;
+}
+const { items, label } = Astro.props;
+---
+
+<div class="gallery" data-gallery>
+  <div class="controls">
+    <button type="button" class="ctrl" data-dir="-1" aria-label="Scroll photos left">
+      <Icon name="arrow" class="flip" />
+    </button>
+    <button type="button" class="ctrl" data-dir="1" aria-label="Scroll photos right">
+      <Icon name="arrow" />
+    </button>
+  </div>
+  <ul role="list" class="track" tabindex="0" aria-label={label} data-track>
+    {
+      items.map((item) => (
+        <li>
+          <figure>
+            <div class="frame">
+              <Photo photo={photos[item.photo]} sizes="(min-width: 64rem) 22rem, 72vw" widths={[400, 640, 800]} aspect={4 / 5} />
+            </div>
+            <figcaption>{item.caption}</figcaption>
+          </figure>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .gallery {
+    position: relative;
+  }
+  .controls {
+    display: none;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+  :global(.js) .controls {
+    display: flex;
+  }
+  .ctrl {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--white);
+    transition: background-color 0.25s;
+  }
+  .ctrl:hover {
+    background: var(--orange);
+    border-color: var(--orange);
+  }
+  .ctrl svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  .flip {
+    transform: scaleX(-1);
+  }
+  .track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(72vw, 22rem);
+    gap: clamp(0.9rem, 0.5rem + 1vw, 1.5rem);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    padding-inline: max(var(--gutter), calc((100% - var(--max)) / 2));
+    padding-bottom: 1rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--line) transparent;
+  }
+  .track li {
+    scroll-snap-align: start;
+  }
+  figure .frame {
+    aspect-ratio: 4 / 5;
+  }
+  figure img {
+    transition: transform 0.8s var(--ease-out);
+  }
+  figure:hover img {
+    transform: scale(1.04);
+  }
+  figcaption {
+    margin-top: 0.8rem;
+    font-size: var(--step--1);
+    color: var(--muted);
+    line-height: 1.45;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((g) => {
+    const track = g.querySelector<HTMLElement>('[data-track]')!;
+    g.querySelectorAll<HTMLButtonElement>('[data-dir]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const dir = Number(btn.dataset.dir);
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        track.scrollBy({ left: dir * track.clientWidth * 0.8, behavior: reduce ? 'auto' : 'smooth' });
+      }),
+    );
+  });
+</script>

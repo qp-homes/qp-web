@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import Skyline from '../components/Skyline.astro';
+import { site } from '../data/site';
+---
+
+<BaseLayout
+  title="Thank You | Quality Plus Building Services"
+  description="Thank you for contacting Quality Plus Building Services."
+  noindex
+>
+  <section class="thanks">
+    <div class="container inner">
+      <p class="eyebrow">Request received</p>
+      <h1>Thank You — We’ll Be in Touch</h1>
+      <p class="lead">
+        Our team will review your facility details and contact you to schedule a site walkthrough. If your request is
+        time-sensitive, call us at <a href={site.phoneHref} data-track="click_to_call">{site.phone}</a>.
+      </p>
+      <div class="btn-row">
+        <a href="/commercial-cleaning-services/" class="btn btn--ghost">Explore Our Services</a>
+        <a href="/" class="link">Back to home <Icon name="arrow" /></a>
+      </div>
+    </div>
+    <Skyline class="t-line" />
+  </section>
+</BaseLayout>
+
+<style>
+  .thanks {
+    position: relative;
+    padding-block: clamp(4rem, 3rem + 6vw, 9rem);
+    overflow: hidden;
+  }
+  .inner {
+    display: grid;
+    gap: 1.5rem;
+    justify-items: start;
+    max-width: 52rem;
+    margin-inline: max(var(--gutter), calc((100vw - var(--max)) / 2));
+  }
+  h1 {
+    font-size: var(--step-5);
+  }
+  .btn-row {
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .t-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 6rem;
+    z-index: -1;
+  }
+</style>

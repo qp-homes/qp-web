@@ -1,0 +1,47 @@
+---
+import { Picture } from 'astro:assets';
+import type { Photo as PhotoData } from '../data/photos';
+
+/**
+ * Responsive photo: AVIF + WebP + JPEG fallback, explicit dimensions (no CLS),
+ * lazy by default. Pass `priority` only for the above-the-fold LCP image.
+ */
+interface Props {
+  photo: PhotoData;
+  sizes: string;
+  widths?: number[];
+  priority?: boolean;
+  decorative?: boolean;
+  class?: string;
+  aspect?: number;
+}
+const {
+  photo,
+  sizes,
+  widths = [400, 640, 900, 1280, 1600],
+  priority = false,
+  decorative = false,
+  class: className,
+  aspect,
+} = Astro.props;
+
+const maxW = photo.src.width;
+const usable = widths.filter((w) => w <= maxW);
+const height = aspect ? Math.round(maxW / aspect) : undefined;
+---
+
+<Picture
+  src={photo.src}
+  alt={decorative ? '' : photo.alt}
+  formats={['avif', 'webp']}
+  widths={usable.length ? usable : [maxW]}
+  sizes={sizes}
+  width={maxW}
+  height={height}
+  fit={aspect ? 'cover' : undefined}
+  quality={72}
+  loading={priority ? 'eager' : 'lazy'}
+  decoding={priority ? 'sync' : 'async'}
+  fetchpriority={priority ? 'high' : undefined}
+  class={className}
+/>

@@ -1,0 +1,152 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+import CityFinder from '../../components/CityFinder.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { photos, type PhotoKey } from '../../data/photos';
+import { areas, type Area } from '../../data/areas';
+import { primaryServices, supportServices, serviceHref } from '../../data/services';
+
+export function getStaticPaths() {
+  return areas.map((a) => ({ params: { slug: a.slug }, props: { area: a } }));
+}
+
+const { area } = Astro.props as { area: Area };
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Service Areas', href: '/service-areas/' },
+  { name: area.name, href: `/service-areas/${area.slug}/` },
+];
+const others = areas.filter((a) => a.slug !== area.slug);
+---
+
+<BaseLayout title={area.title} description={area.description} breadcrumbs={breadcrumbs} noindex={!area.indexable}>
+  <PageHero
+    eyebrow={area.indexable ? 'Primary service area' : 'Projects reviewed by request'}
+    title={area.h1}
+    lead={area.lead}
+    breadcrumbs={breadcrumbs}
+    photo={photos[area.photo as PhotoKey]}
+  />
+
+  <section class="section" aria-labelledby="local-title">
+    <div class="container local">
+      <div class="prose">
+        <p class="eyebrow">{area.indexable ? 'Local team' : 'How it works'}</p>
+        <h2 id="local-title">
+          {area.indexable ? 'A Cleaning Partner That Knows the County' : `Serving Facilities in ${area.name}`}
+        </h2>
+        {area.body.map((p) => <p>{p}</p>)}
+      </div>
+      <aside class="services-box" aria-labelledby="box-title">
+        <h3 id="box-title">Services {area.indexable ? 'available' : 'we can review'}</h3>
+        <ul role="list">
+          {
+            [...primaryServices, ...supportServices].map((s) => (
+              <li>
+                <a href={serviceHref(s.slug)}>
+                  {s.name} <Icon name="arrow" />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  {
+    area.cities && (
+      <section class="section alt" aria-labelledby="cities-title">
+        <div class="container">
+          <div class="section-head">
+            <p class="eyebrow">Cities</p>
+            <h2 id="cities-title">Cities We Serve in {area.name}</h2>
+          </div>
+          <CityFinder cities={area.cities} county={area.name} />
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section--tight" aria-labelledby="other-title">
+    <div class="container">
+      <h2 id="other-title" class="other-title">Other Service Areas</h2>
+      <ul role="list" class="others">
+        {
+          others.map((a) => (
+            <li>
+              <a href={`/service-areas/${a.slug}/`} class="link">
+                {a.name} <Icon name="arrow" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand
+    title={area.indexable ? 'Let’s Build a Cleaning Plan for Your Facility' : 'Check Availability for Your Facility'}
+  />
+</BaseLayout>
+
+<style>
+  .local {
+    display: grid;
+    gap: 3rem;
+  }
+  @media (min-width: 64rem) {
+    .local {
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 5rem;
+      align-items: start;
+    }
+  }
+  .local .prose {
+    display: grid;
+    gap: 1.1rem;
+  }
+  .local .prose p + p {
+    margin-top: 0;
+  }
+  .local h2 {
+    font-size: var(--step-3);
+  }
+  .services-box {
+    padding: 1.75rem;
+    border-radius: var(--radius-lg);
+    background: var(--ink);
+    color: var(--on-dark);
+  }
+  .services-box h3 {
+    font-size: var(--step-1);
+    margin-bottom: 1rem;
+  }
+  .services-box a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--line-dark);
+    text-decoration: none;
+    font-weight: 560;
+  }
+  .services-box a:hover {
+    color: var(--orange);
+  }
+  .services-box svg {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+  .other-title {
+    font-size: var(--step-2);
+    margin-bottom: 1.25rem;
+  }
+  .others {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+  }
+</style>

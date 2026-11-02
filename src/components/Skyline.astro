@@ -1,0 +1,60 @@
+---
+/**
+ * Signature line: a stylized Los Angeles skyline drawn as a single stroke,
+ * echoing the outline in the Quality Plus logo. Draws itself when it enters
+ * the viewport (via [data-draw]); static when reduced motion is requested.
+ */
+interface Props {
+  class?: string;
+  tone?: 'sky' | 'orange' | 'light';
+}
+const { class: className, tone = 'sky', ...rest } = Astro.props;
+---
+
+<svg
+  {...rest}
+  class:list={['skyline', `skyline--${tone}`, className]}
+  viewBox="0 0 1200 120"
+  preserveAspectRatio="none"
+  aria-hidden="true"
+  focusable="false"
+  data-draw
+>
+  <path
+    pathLength="1"
+    d="M0 110H60V92H84V80H110V96H140V70H158V62H176V70H190V100H230V86H250V54H262V44H274V54H290V88H330V100H360V72H378V60H396V72H410V96H450V40H462V28L468 14L474 28H486V40H500V90H540V66H556V50H574V66H590V98H630V20H640V8H652V20H662V84H700V58H724V100H760V76H790V48L800 36L810 48V82H850V94H880V62H904V70H920V100H960V80H990V66H1010V90H1050V74H1070V96H1110V86H1140V104H1200"
+  ></path>
+</svg>
+
+<style>
+  .skyline {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .skyline path {
+    fill: none;
+    stroke-width: 2;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+  .skyline--sky path {
+    stroke: var(--sky);
+  }
+  .skyline--orange path {
+    stroke: var(--orange);
+  }
+  .skyline--light path {
+    stroke: rgb(159 201 239 / 0.55);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .skyline path {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      transition: stroke-dashoffset 2.6s var(--ease-in-out);
+    }
+    :global(.js) .skyline.is-in path {
+      stroke-dashoffset: 0;
+    }
+  }
+</style>
