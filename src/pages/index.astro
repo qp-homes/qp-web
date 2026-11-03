@@ -7,6 +7,7 @@ import Process from '../components/Process.astro';
 import Gallery from '../components/Gallery.astro';
 import Faq from '../components/Faq.astro';
 import CtaBand from '../components/CtaBand.astro';
+import HomeJourney from '../components/HomeJourney.astro';
 import { photos, type PhotoKey } from '../data/photos';
 import { site, primaryCta } from '../data/site';
 import { primaryServices, supportServices, services, serviceHref } from '../data/services';
@@ -76,6 +77,18 @@ const faqs = [
 ];
 
 const ticker = services.map((s) => s.name);
+
+// Tour stops for the chapter rail (ids of existing section headings).
+const chapters = [
+  { id: 'approach-title', label: 'Approach' },
+  { id: 'pillars-title', label: 'Core services' },
+  { id: 'support-title', label: 'Add-on services' },
+  { id: 'why-title', label: 'Why Quality Plus' },
+  { id: 'process-title', label: 'How it works' },
+  { id: 'coverage-title', label: 'Coverage' },
+  { id: 'proof-title', label: 'Our team' },
+  { id: 'faq-title', label: 'FAQ' },
+];
 ---
 
 <BaseLayout
@@ -83,6 +96,7 @@ const ticker = services.map((s) => s.name);
   description="Quality Plus Building Services provides retail, medical office, and commercial building cleaning in Los Angeles. Request a site walkthrough."
   heroOverlay
 >
+  <HomeJourney chapters={chapters} />
   <!-- ============ Hero ============ -->
   <section class="hero" data-hero>
     <div class="hero-bg" data-hero-bg aria-hidden="true">
@@ -135,7 +149,7 @@ const ticker = services.map((s) => s.name);
   <!-- ============ Statement ============ -->
   <section class="section statement-sec" aria-label="Our approach">
     <div class="container">
-      <p class="eyebrow">Our approach</p>
+      <p class="eyebrow" id="approach-title">Our approach</p>
       <p class="statement" data-scrub-words>
         Every facility runs differently. We walk it with you first — then build a cleaning plan your staff, tenants,
         and customers will actually notice.
@@ -215,8 +229,10 @@ const ticker = services.map((s) => s.name);
           supportServices.map((s, i) => (
             <li class="support-item">
               <a href={serviceHref(s.slug)} data-cursor="View">
-                <div class="frame" data-clip>
-                  <Photo photo={photos[s.hero]} sizes="(min-width: 64rem) 30vw, (min-width: 40rem) 45vw, 100vw" widths={[480, 720, 960]} aspect={4 / 5} />
+                <div class="stack" data-rise3d>
+                  <div class="frame" data-tilt>
+                    <Photo photo={photos[s.hero]} sizes="(min-width: 64rem) 30vw, (min-width: 40rem) 45vw, 100vw" widths={[480, 720, 960]} aspect={4 / 5} />
+                  </div>
                 </div>
                 <span class="index">0{i + 1}</span>
                 <h3>{s.name}</h3>
@@ -233,9 +249,11 @@ const ticker = services.map((s) => s.name);
   <section class="section why" aria-labelledby="why-title">
     <div class="container why-grid">
       <div class="why-media">
-        <div class="frame why-main" data-clip>
+        <div class="why-plate" aria-hidden="true"></div>
+        <div class="frame why-main" data-clip data-tilt>
           <Photo photo={photos.officeTeamKarla} sizes="(min-width: 64rem) 36vw, 90vw" widths={[480, 720, 960, 1200]} aspect={4 / 5} />
         </div>
+        <p class="why-chip" data-parallax="0.08"><span></span>Real Quality Plus team</p>
         <div class="frame why-inset" data-parallax="-0.06">
           <Photo photo={photos.twoMembersOrangeWall} sizes="(min-width: 64rem) 16vw, 40vw" widths={[320, 480, 640]} aspect={3 / 4} />
         </div>
@@ -815,7 +833,35 @@ const ticker = services.map((s) => s.name);
   .support-item .frame {
     aspect-ratio: 4 / 5;
     border-radius: var(--radius-lg);
-    margin-bottom: 0.75rem;
+    box-shadow: 0 30px 60px -30px rgb(20 32 46 / 0.55);
+  }
+  /* Photo stack: a brand-colored plate sits behind each photo, offset and turned,
+     so the cards read as layered objects rather than flat thumbnails. */
+  .stack {
+    position: relative;
+    margin: 0 1rem 1.75rem 0;
+    transform-style: preserve-3d;
+  }
+  .stack::before {
+    content: '';
+    position: absolute;
+    inset: 1rem -1rem -1rem 1rem;
+    border-radius: var(--radius-lg);
+    background: var(--plate, var(--orange));
+    transform: rotate(2.5deg);
+    transition: transform 0.6s var(--ease-out);
+  }
+  .support-item:nth-child(2) .stack {
+    --plate: var(--sky);
+  }
+  .support-item:nth-child(2) .stack::before {
+    transform: rotate(-2.5deg);
+  }
+  .support-item:nth-child(3) .stack {
+    --plate: var(--ink);
+  }
+  .support-item a:hover .stack::before {
+    transform: rotate(0deg) translate(0.4rem, 0.4rem);
   }
   .support-item :global(img) {
     transition: transform 1s var(--ease-out);
@@ -854,6 +900,41 @@ const ticker = services.map((s) => s.name);
   .why-main {
     aspect-ratio: 4 / 5;
     border-radius: var(--radius-lg);
+    box-shadow: 0 40px 70px -35px rgb(20 32 46 / 0.6);
+  }
+  .why-plate {
+    position: absolute;
+    top: -1.5rem;
+    left: calc(0.25rem - min(1.75rem, var(--gutter)));
+    width: 70%;
+    height: 60%;
+    border-radius: var(--radius-lg);
+    background:
+      repeating-linear-gradient(135deg, rgb(246 100 21 / 0.9) 0 2px, transparent 2px 14px);
+    opacity: 0.55;
+  }
+  .why-chip {
+    position: absolute;
+    left: -1rem;
+    bottom: 7rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 1.1rem;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--on-dark);
+    font-size: var(--step--1);
+    font-weight: 640;
+    box-shadow: 0 18px 40px -18px rgb(20 32 46 / 0.7);
+  }
+  .why-chip span {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: var(--orange);
+    box-shadow: 0 0 0 4px rgb(246 100 21 / 0.25);
   }
   .why-inset {
     position: absolute;
@@ -989,6 +1070,14 @@ const ticker = services.map((s) => s.name);
 
   .proof .section-head {
     margin-bottom: 2rem;
+  }
+
+  /* Light sections let the fixed ambient backdrop (HomeJourney) show through. */
+  :global(main) .alt {
+    background: rgb(236 232 223 / 0.6);
+  }
+  .proof :global(figure .frame) {
+    box-shadow: 0 26px 50px -28px rgb(20 32 46 / 0.6);
   }
 </style>
 

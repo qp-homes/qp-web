@@ -13,6 +13,8 @@
  *   [data-hscroll]     section pins and its [data-hscroll-track] scrolls sideways (desktop)
  *   main h2              headings rise word by word when they enter
  *   [data-clip]          image frame reveals with a clip + scale when it enters
+ *   [data-rise3d]        card tilts back in 3D and straightens as it scrolls into place
+ *   [data-tilt]          card leans in 3D toward the pointer (fine pointers only)
  *   [data-magnetic]      element leans toward the pointer (fine pointers only)
  *   [data-cursor="Text"] custom cursor shows a label over the element (fine pointers only)
  */
@@ -58,7 +60,9 @@ async function init() {
   driftLines(gsap);
   horizontalSections(gsap, ScrollTrigger);
   clipReveals(gsap);
+  rise3d(gsap);
   if (finePointer.matches) {
+    tilt(gsap);
     magnetic(gsap);
     cursor(gsap);
   }
@@ -217,6 +221,40 @@ function clipReveals(gsap: G) {
         { clipPath: 'inset(0% 0% 0% 0% round 14px)', duration: 1.3, ease: 'expo.out' },
       )
       .fromTo(img, { scale: 1.22 }, { scale: 1, duration: 1.6, ease: 'expo.out' }, 0);
+  });
+}
+
+function rise3d(gsap: G) {
+  document.querySelectorAll<HTMLElement>('[data-rise3d]').forEach((el, i) => {
+    gsap.fromTo(
+      el,
+      { rotateX: 22, rotateZ: i % 2 ? 3 : -3, y: 90, transformPerspective: 1100, transformOrigin: '50% 100%' },
+      {
+        rotateX: 0,
+        rotateZ: 0,
+        y: 0,
+        ease: 'none',
+        scrollTrigger: { trigger: el, start: 'top bottom', end: 'top 45%', scrub: 0.6 },
+      },
+    );
+  });
+}
+
+function tilt(gsap: G) {
+  document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((el) => {
+    const max = 7;
+    gsap.set(el, { transformPerspective: 900 });
+    const rx = gsap.quickTo(el, 'rotationX', { duration: 0.6, ease: 'power3.out' });
+    const ry = gsap.quickTo(el, 'rotationY', { duration: 0.6, ease: 'power3.out' });
+    el.addEventListener('pointermove', (e) => {
+      const r = el.getBoundingClientRect();
+      ry(((e.clientX - r.left) / r.width - 0.5) * 2 * max);
+      rx(-((e.clientY - r.top) / r.height - 0.5) * 2 * max);
+    });
+    el.addEventListener('pointerleave', () => {
+      rx(0);
+      ry(0);
+    });
   });
 }
 

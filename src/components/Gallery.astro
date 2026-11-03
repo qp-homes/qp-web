@@ -25,7 +25,7 @@ const { items, label } = Astro.props;
       items.map((item) => (
         <li>
           <figure>
-            <div class="frame">
+            <div class="frame" data-tilt>
               <Photo photo={photos[item.photo]} sizes="(min-width: 64rem) 22rem, 72vw" widths={[400, 640, 800]} aspect={4 / 5} />
             </div>
             <figcaption>{item.caption}</figcaption>
