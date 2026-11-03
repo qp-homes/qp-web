@@ -840,7 +840,11 @@ const chapters = [
   .stack {
     position: relative;
     margin: 0 1rem 1.75rem 0;
-    transform-style: preserve-3d;
+  }
+  /* Keep the photo above its plate even while it tilts in 3D (the plate must
+     never cut through the photo's plane). */
+  .stack .frame {
+    z-index: 1;
   }
   .stack::before {
     content: '';

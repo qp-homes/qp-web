@@ -95,7 +95,8 @@ const { chapters } = Astro.props;
   .rail {
     display: none;
   }
-  @media (min-width: 75rem) {
+  /* Only where the page margin is wide enough to hold the rail without covering text. */
+  @media (min-width: 92rem) {
     .rail {
       position: fixed;
       left: 0.6rem;
