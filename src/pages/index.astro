@@ -6,9 +6,7 @@ import Skyline from '../components/Skyline.astro';
 import Process from '../components/Process.astro';
 import Gallery from '../components/Gallery.astro';
 import Faq from '../components/Faq.astro';
-import CtaBand from '../components/CtaBand.astro';
-import HomeJourney from '../components/HomeJourney.astro';
-import { photos, type PhotoKey } from '../data/photos';
+import CtaBand from '../components/CtaBand.astro';import { photos, type PhotoKey } from '../data/photos';
 import { site, primaryCta } from '../data/site';
 import { primaryServices, supportServices, services, serviceHref } from '../data/services';
 import { areas, laCountyCities } from '../data/areas';
@@ -76,27 +74,13 @@ const faqs = [
   },
 ];
 
-const ticker = services.map((s) => s.name);
-
-// Tour stops for the chapter rail (ids of existing section headings).
-const chapters = [
-  { id: 'approach-title', label: 'Approach' },
-  { id: 'pillars-title', label: 'Core services' },
-  { id: 'support-title', label: 'Add-on services' },
-  { id: 'why-title', label: 'Why Quality Plus' },
-  { id: 'process-title', label: 'How it works' },
-  { id: 'coverage-title', label: 'Coverage' },
-  { id: 'proof-title', label: 'Our team' },
-  { id: 'faq-title', label: 'FAQ' },
-];
----
+const ticker = services.map((s) => s.name);---
 
 <BaseLayout
   title="Commercial Cleaning Services Los Angeles | Quality Plus"
   description="Quality Plus Building Services provides retail, medical office, and commercial building cleaning in Los Angeles. Request a site walkthrough."
   heroOverlay
 >
-  <HomeJourney chapters={chapters} />
   <!-- ============ Hero ============ -->
   <section class="hero" data-hero>
     <div class="hero-bg" data-hero-bg aria-hidden="true">
@@ -149,7 +133,7 @@ const chapters = [
   <!-- ============ Statement ============ -->
   <section class="section statement-sec" aria-label="Our approach">
     <div class="container">
-      <p class="eyebrow" id="approach-title">Our approach</p>
+      <p class="eyebrow">Our approach</p>
       <p class="statement" data-scrub-words>
         Every facility runs differently. We walk it with you first — then build a cleaning plan your staff, tenants,
         and customers will actually notice.
@@ -296,7 +280,7 @@ const chapters = [
           Los Angeles County is our home and primary service area — from Downtown LA and the Westside to the San Gabriel
           Valley, the South Bay, and the Antelope Valley.
         </p>
-        <p class="big-count" aria-hidden="true">{laCountyCities.length}<span>cities in LA County</span></p>
+        <p class="big-count" aria-hidden="true"><b data-count>{laCountyCities.length}</b><span>cities in LA County</span></p>
         <div class="btn-row">
           <a href="/service-areas/los-angeles-county/" class="btn btn--ghost" data-magnetic>
             Check cities in LA County <Icon name="arrow" />
@@ -835,25 +819,8 @@ const chapters = [
     border-radius: var(--radius-lg);
     box-shadow: 0 30px 60px -30px rgb(20 32 46 / 0.55);
   }
-  /* Photo stack: a brand-colored plate sits behind each photo, offset and turned,
-     so the cards read as layered objects rather than flat thumbnails. */
-  .stack {
-    position: relative;
-    margin: 0 1rem 1.75rem 0;
-  }
-  /* Keep the photo above its plate even while it tilts in 3D (the plate must
-     never cut through the photo's plane). */
-  .stack .frame {
-    z-index: 1;
-  }
-  .stack::before {
-    content: '';
-    position: absolute;
-    inset: 1rem -1rem -1rem 1rem;
-    border-radius: var(--radius-lg);
-    background: var(--plate, var(--orange));
-    transform: rotate(2.5deg);
-    transition: transform 0.6s var(--ease-out);
+  .support-item .stack {
+    margin-bottom: 1.75rem;
   }
   .support-item:nth-child(2) .stack {
     --plate: var(--sky);
@@ -1076,10 +1043,6 @@ const chapters = [
     margin-bottom: 2rem;
   }
 
-  /* Light sections let the fixed ambient backdrop (HomeJourney) show through. */
-  :global(main) .alt {
-    background: rgb(236 232 223 / 0.6);
-  }
   .proof :global(figure .frame) {
     box-shadow: 0 26px 50px -28px rgb(20 32 46 / 0.6);
   }

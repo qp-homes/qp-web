@@ -1,0 +1,97 @@
+---
+/**
+ * Fixed decorative backdrop behind the light sections of every page: blueprint
+ * grid, soft brand-colored glows and a large skyline stroke that drift with the
+ * scroll, so long pages never read as flat white. Purely decorative.
+ */
+import Skyline from './Skyline.astro';
+---
+
+<div class="ambient" aria-hidden="true">
+  <div class="amb-grid"></div>
+  <div class="amb-glow amb-glow--orange"></div>
+  <div class="amb-glow amb-glow--sky"></div>
+  <div class="amb-sky"><Skyline /></div>
+</div>
+
+<style>
+  .ambient {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    --sp: 0; /* scroll progress 0–1, set by the script below */
+  }
+  .amb-grid {
+    position: absolute;
+    inset: -10% 0;
+    background-image:
+      linear-gradient(rgb(20 32 46 / 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(20 32 46 / 0.05) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 30%, transparent 80%);
+    transform: translate3d(0, calc(var(--sp) * -8%), 0);
+  }
+  .amb-glow {
+    position: absolute;
+    width: 46vmax;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    filter: blur(70px);
+  }
+  .amb-glow--orange {
+    top: -10vmax;
+    right: -14vmax;
+    background: radial-gradient(circle, rgb(246 100 21 / 0.2), transparent 65%);
+    transform: translate3d(calc(var(--sp) * -55vw), calc(var(--sp) * 70vh), 0);
+  }
+  .amb-glow--sky {
+    bottom: -16vmax;
+    left: -14vmax;
+    background: radial-gradient(circle, rgb(64 148 220 / 0.22), transparent 65%);
+    transform: translate3d(calc(var(--sp) * 45vw), calc(var(--sp) * -60vh), 0);
+  }
+  .amb-sky {
+    position: absolute;
+    left: 0;
+    bottom: 6vh;
+    width: 180vw;
+    opacity: 0.22;
+    transform: translate3d(calc(var(--sp) * -80vw), 0, 0);
+  }
+  .amb-sky :global(svg) {
+    height: 22vh;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .amb-grid,
+    .amb-glow,
+    .amb-sky {
+      transform: none !important;
+    }
+  }
+</style>
+
+<script>
+  const ambient = document.querySelector<HTMLElement>('.ambient');
+  if (ambient && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      ambient.style.setProperty('--sp', p.toFixed(4));
+    };
+    update();
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      },
+      { passive: true },
+    );
+  }
+</script>

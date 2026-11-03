@@ -26,7 +26,7 @@ const { eyebrow, title, lead, breadcrumbs, photo, cta = primaryCta, showPhone = 
     <div class="grid">
       <div class="copy">
         <p class="eyebrow">{eyebrow}</p>
-        <h1>{title}</h1>
+        <h1 aria-label={title}>{title.split(' ').map((w, i) => <><span class="w" aria-hidden="true"><span style={`--i:${i}`}>{w}</span></span>{' '}</>)}</h1>
         <p class="lead">{lead}</p>
         <div class="btn-row" data-hide-mobile-bar>
           <a href={cta.href} class="btn">{cta.label} <Icon name="arrow" /></a>
@@ -42,8 +42,10 @@ const { eyebrow, title, lead, breadcrumbs, photo, cta = primaryCta, showPhone = 
       </div>
       {
         photo && (
-          <div class="media frame" style={vtName ? `view-transition-name: ${vtName}` : undefined}>
-            <Photo photo={photo} priority sizes="(min-width: 64rem) 40vw, 100vw" aspect={4 / 5} />
+          <div class="stack">
+            <div class="media frame" data-tilt style={vtName ? `view-transition-name: ${vtName}` : undefined}>
+              <Photo photo={photo} priority sizes="(min-width: 64rem) 40vw, 100vw" aspect={4 / 5} />
+            </div>
           </div>
         )
       }
@@ -74,6 +76,48 @@ const { eyebrow, title, lead, breadcrumbs, photo, cta = primaryCta, showPhone = 
   }
   .has-photo h1 {
     font-size: var(--step-5);
+  }
+  /* Title words rise in on load; the rest of the intro follows. */
+  .w {
+    display: inline-block;
+    overflow: clip;
+    vertical-align: top;
+    padding-bottom: 0.08em;
+  }
+  .w > span {
+    display: inline-block;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .w > span {
+      animation: rise-word 1.1s var(--ease-out) both;
+      animation-delay: calc(120ms + var(--i) * 60ms);
+    }
+    .copy > :not(h1) {
+      animation: fade-up 1s 0.55s var(--ease-out) both;
+    }
+    /* The photo is the LCP image: it moves in but is never hidden. */
+    .stack {
+      animation: lift 1.2s 0.2s var(--ease-out) both;
+    }
+  }
+  @keyframes lift {
+    from {
+      transform: translateY(28px) rotate(1.5deg);
+    }
+  }
+  @keyframes rise-word {
+    from {
+      transform: translateY(105%) rotate(4deg);
+    }
+  }
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+  }
+  .stack {
+    --plate: var(--sky);
   }
   .media {
     aspect-ratio: 4 / 5;

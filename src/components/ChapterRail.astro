@@ -1,0 +1,148 @@
+---
+/**
+ * Chapter rail (desktop, progressive enhancement): a fixed index of the page's
+ * sections that marks where the visitor is in the tour and lets them jump
+ * between sections. Built at runtime from the sections that have an eyebrow
+ * label and a heading; pages with fewer than three such sections get no rail.
+ */
+---
+
+<nav class="rail" aria-label="Page sections" data-rail hidden>
+  <span class="rail-line" aria-hidden="true"><span data-rail-fill></span></span>
+  <ol role="list" data-rail-list></ol>
+</nav>
+
+<style>
+  .rail {
+    display: none;
+  }
+  /* Only where the page margin is wide enough to hold the rail without covering text. */
+  @media (min-width: 92rem) {
+    .rail:not([hidden]) {
+      position: fixed;
+      left: 0.6rem;
+      top: 50%;
+      z-index: 40;
+      display: flex;
+      gap: 0.6rem;
+      padding: 0.8rem 0.6rem;
+      border-radius: 999px;
+      background: rgb(20 32 46 / 0.88);
+      color: var(--on-dark);
+      transform: translate(-140%, -50%);
+      transition: transform 0.6s var(--ease-out);
+    }
+    .rail.is-on,
+    .rail:focus-within {
+      transform: translate(0, -50%);
+    }
+  }
+  .rail-line {
+    position: relative;
+    width: 2px;
+    background: var(--line-dark);
+    border-radius: 2px;
+  }
+  .rail-line span {
+    position: absolute;
+    inset: 0;
+    background: var(--orange);
+    transform-origin: top;
+    transform: scaleY(var(--rp, 0));
+  }
+  .rail ol {
+    display: grid;
+    gap: 0.35rem;
+  }
+  .rail :global(a) {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 1.75rem;
+    text-decoration: none;
+    color: var(--on-dark-muted);
+    font-size: 0.78rem;
+    font-weight: 620;
+    letter-spacing: 0.06em;
+  }
+  .rail :global(.rail-num) {
+    font-variant-numeric: tabular-nums;
+    transition: color 0.3s;
+  }
+  /* Labels stay tucked away (the rail fits in the page margin); they open on hover/focus. */
+  .rail :global(.rail-label) {
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 0;
+    transition:
+      max-width 0.5s var(--ease-out),
+      opacity 0.3s;
+  }
+  .rail:hover :global(.rail-label),
+  .rail:focus-within :global(.rail-label) {
+    max-width: 11rem;
+    opacity: 1;
+  }
+  .rail :global(a.is-current),
+  .rail :global(a:hover) {
+    color: var(--on-dark);
+  }
+  .rail :global(a.is-current .rail-num) {
+    color: var(--orange);
+  }
+</style>
+
+<script>
+  const rail = document.querySelector<HTMLElement>('[data-rail]');
+  const list = rail?.querySelector('[data-rail-list]');
+  const fill = rail?.querySelector<HTMLElement>('[data-rail-fill]');
+  const all = [...document.querySelectorAll<HTMLElement>('main > section, main > div > section')];
+  const first = all[0];
+  // A chapter = a section (not the page's opening hero) with an eyebrow and a heading.
+  const sections = all.filter((s) => s !== first && s.querySelector('.eyebrow') && s.querySelector('h2'));
+
+  if (rail && list && sections.length >= 3) {
+    const links = sections.map((s, i) => {
+      const h = s.querySelector('h2')!;
+      if (!h.id) h.id = `section-${i + 1}`;
+      const label = s.querySelector('.eyebrow')!.textContent!.trim();
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = `#${h.id}`;
+      a.innerHTML = `<span class="rail-num">${String(i + 1).padStart(2, '0')}</span><span class="rail-label"></span>`;
+      a.querySelector('.rail-label')!.textContent = label;
+      li.append(a);
+      list.append(li);
+      return a;
+    });
+    rail.hidden = false;
+
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      // Current chapter: the last section whose top has passed the middle of the screen.
+      const mid = window.innerHeight * 0.5;
+      let current = -1;
+      sections.forEach((s, i) => {
+        if (s.getBoundingClientRect().top < mid) current = i;
+      });
+      links.forEach((a, i) => {
+        a.classList.toggle('is-current', i === current);
+        if (i === current) a.setAttribute('aria-current', 'true');
+        else a.removeAttribute('aria-current');
+      });
+      fill?.style.setProperty('--rp', String((current + 1) / links.length));
+      rail.classList.toggle('is-on', first ? first.getBoundingClientRect().bottom < window.innerHeight * 0.4 : true);
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+  }
+</script>

@@ -53,4 +53,5 @@ El objetivo es conseguir solicitudes de **Site Walkthrough**, no presupuestos in
 ## Estado actual
 
 - La Home tiene aplicada la Fase 1 de movimiento y está pendiente de revisión del propietario.
-- About, servicios y Service Areas siguen con el diseño anterior hasta que se apruebe la Home.
+- Todo el sitio comparte el fondo ambiental fijo (`Ambient.astro`), el índice lateral de secciones (`ChapterRail.astro`)
+  y las animaciones de `motion.ts`, que `BaseLayout` carga en cada página. `/home-v2/` los desactiva con `journey={false}`.

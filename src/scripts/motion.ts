@@ -13,7 +13,9 @@
  *   [data-hscroll]     section pins and its [data-hscroll-track] scrolls sideways (desktop)
  *   main h2              headings rise word by word when they enter
  *   [data-clip]          image frame reveals with a clip + scale when it enters
- *   [data-rise3d]        card tilts back in 3D and straightens as it scrolls into place
+ *   [data-count]         number counts up from zero when it enters
+ *   .eyebrow/.lead/…     section labels, intros and buttons ease up when they enter
+ *   [data-rise3d]      card tilts back in 3D and straightens as it scrolls into place
  *   [data-tilt]          card leans in 3D toward the pointer (fine pointers only)
  *   [data-magnetic]      element leans toward the pointer (fine pointers only)
  *   [data-cursor="Text"] custom cursor shows a label over the element (fine pointers only)
@@ -61,6 +63,8 @@ async function init() {
   horizontalSections(gsap, ScrollTrigger);
   clipReveals(gsap);
   rise3d(gsap);
+  countUp(gsap);
+  textReveals(gsap);
   if (finePointer.matches) {
     tilt(gsap);
     magnetic(gsap);
@@ -224,6 +228,42 @@ function clipReveals(gsap: G) {
   });
 }
 
+function countUp(gsap: G) {
+  document.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
+    const end = Number(el.textContent);
+    if (!Number.isFinite(end)) return;
+    const n = { v: 0 };
+    el.textContent = '0';
+    gsap.to(n, {
+      v: end,
+      duration: 1.8,
+      ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+      onUpdate: () => (el.textContent = String(Math.round(n.v))),
+    });
+  });
+}
+
+// Eyebrows, leads, buttons and closing lines ease up as their section arrives.
+// Opening heroes animate on load in CSS, so they are skipped here.
+function textReveals(gsap: G) {
+  const skip = '[data-hero], .page-hero, [data-reveal], [data-kinetic], [data-scrub-words]';
+  const els = [
+    ...document.querySelectorAll<HTMLElement>(
+      'main .eyebrow, main .lead, main .btn-row, main .big-count, main .end-title, main .section .link',
+    ),
+  ].filter((el) => !el.closest(skip));
+  els.forEach((el) => {
+    gsap.from(el, {
+      y: 26,
+      opacity: 0,
+      duration: 1,
+      ease: 'expo.out',
+      scrollTrigger: { trigger: el, start: 'top 92%', once: true },
+    });
+  });
+}
+
 function rise3d(gsap: G) {
   document.querySelectorAll<HTMLElement>('[data-rise3d]').forEach((el, i) => {
     gsap.fromTo(
@@ -241,7 +281,14 @@ function rise3d(gsap: G) {
 }
 
 function tilt(gsap: G) {
-  document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((el) => {
+  // Opted-in cards, plus any other content photo frame on the site.
+  const els = new Set([
+    ...document.querySelectorAll<HTMLElement>('[data-tilt]'),
+    ...[...document.querySelectorAll<HTMLElement>('main .frame')].filter(
+      (f) => f.querySelector('img') && !f.closest('[data-hero], [data-hscroll], [data-rise3d]'),
+    ),
+  ]);
+  els.forEach((el) => {
     const max = 7;
     gsap.set(el, { transformPerspective: 900 });
     const rx = gsap.quickTo(el, 'rotationX', { duration: 0.6, ease: 'power3.out' });

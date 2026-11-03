@@ -5,6 +5,8 @@ import fontUrl from '@fontsource-variable/archivo/files/archivo-latin-wdth-norma
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import MobileBar from '../components/MobileBar.astro';
+import Ambient from '../components/Ambient.astro';
+import ChapterRail from '../components/ChapterRail.astro';
 import { site } from '../data/site';
 import { isNoindex } from '../data/indexing';
 import { businessSchema, breadcrumbSchema } from '../data/schema';
@@ -18,9 +20,11 @@ interface Props {
   ogImage?: string;
   /** Page opens with a full-bleed dark hero: header floats over it. */
   heroOverlay?: boolean;
+  /** Fixed ambient backdrop and chapter rail (off for pages with their own scene). */
+  journey?: boolean;
 }
 
-const { title, description, breadcrumbs, schema = [], ogImage = '/og-image.jpg', heroOverlay = false } = Astro.props;
+const { title, description, breadcrumbs, schema = [], ogImage = '/og-image.jpg', heroOverlay = false, journey = true } = Astro.props;
 const base = Astro.site ?? new URL(Astro.url.origin);
 const path = Astro.url.pathname;
 const noindex = Astro.props.noindex ?? isNoindex(path);
@@ -69,14 +73,17 @@ const jsonLd = [
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
+    {journey && <Ambient />}
     <Header overlay={heroOverlay} />
     <main id="main" tabindex="-1">
       <slot />
     </main>
     <Footer />
     <MobileBar />
+    {journey && <ChapterRail />}
 
     <script>
+      import '../scripts/motion';
       // Reveal-on-scroll and line drawing. Content is visible without JS
       // and when the user prefers reduced motion (handled in CSS).
       const items = document.querySelectorAll('[data-reveal], [data-draw]');
