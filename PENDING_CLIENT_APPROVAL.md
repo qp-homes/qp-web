@@ -17,6 +17,8 @@ Leyenda: 🔴 bloquea publicación · 🟠 importante · 🟢 mejora
 | 1.5 🟠 | Perfil de fundadora (nombre de Karla, "sigue involucrada en el día a día") | Visible en About y Home | Confirmar redacción |
 | 1.6 🟢 | URLs de Instagram y Facebook | Ocultas (no se proporcionaron) | Facilitar URLs |
 | 1.7 🟢 | Horario de atención | No se muestra | Facilitar si se desea mostrar/añadir al schema |
+| 1.8 🔴 | **Dirección en Google Business Profile: "4113 Beverly Blvd A"**; la web dice "4113 Beverly Blvd". En la misma dirección figura **Purple Home Cleaning, LLC** (limpieza residencial, otro teléfono) | Web sin "A" | Confirmar la dirección exacta (con o sin "Suite A") e igualar web, schema y perfil. Aclarar la relación con Purple Home Cleaning |
+| 1.9 🟠 | Perfiles para `sameAs`: Facebook, LinkedIn, Yelp y Chamber of Commerce aparecen en Bing | Solo está el perfil de Google (CID 8422972607425501852) | Confirmar las URLs oficiales para añadirlas |
 
 ## 2. Cobertura — `src/data/areas.ts`
 

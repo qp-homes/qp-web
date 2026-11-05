@@ -31,3 +31,96 @@
   from = "/services/"
   to = "/commercial-cleaning-services/"
   status = 301
+
+# ---------------------------------------------------------------------------
+# Old WordPress site (same domain) → new pages. Every URL in its sitemap gets
+# its closest equivalent so indexed pages and links keep their value.
+# Verify live with curl the day the domain moves to Netlify.
+# ---------------------------------------------------------------------------
+[[redirects]]
+  from = "/home-building-services-cleaning/"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/building-services-cleaning/"
+  to = "/commercial-cleaning-services/"
+  status = 301
+
+[[redirects]]
+  from = "/services-cleaning/"
+  to = "/commercial-cleaning-services/"
+  status = 301
+
+[[redirects]]
+  from = "/about-building-services-cleaning/"
+  to = "/about/"
+  status = 301
+
+[[redirects]]
+  from = "/about-home-services-cleaning/"
+  to = "/about/"
+  status = 301
+
+# Former Inland Empire landing: San Bernardino County is its equivalent area.
+[[redirects]]
+  from = "/comercial-cleaning-inland-empire/"
+  to = "/service-areas/san-bernardino-county/"
+  status = 301
+
+# Residential pages had no commercial equivalent.
+[[redirects]]
+  from = "/home-services-cleaning/"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/coming-soon/"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/sample-page/"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/author/*"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/elementor-hf/*"
+  to = "/"
+  status = 301
+
+# Old WordPress sitemaps → the new sitemap index.
+[[redirects]]
+  from = "/wp-sitemap.xml"
+  to = "/sitemap-index.xml"
+  status = 301
+
+[[redirects]]
+  from = "/wp-sitemap-posts-page-1.xml"
+  to = "/sitemap-index.xml"
+  status = 301
+
+[[redirects]]
+  from = "/wp-sitemap-posts-elementor-hf-1.xml"
+  to = "/sitemap-index.xml"
+  status = 301
+
+[[redirects]]
+  from = "/wp-sitemap-users-1.xml"
+  to = "/sitemap-index.xml"
+  status = 301
+
+[[redirects]]
+  from = "/sitemap_index.xml"
+  to = "/sitemap-index.xml"
+  status = 301
+
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "/sitemap-index.xml"
+  status = 301

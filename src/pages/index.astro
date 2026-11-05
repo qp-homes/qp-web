@@ -54,7 +54,7 @@ const gallery = [
 const faqs = [
   {
     q: 'What kinds of facilities do you clean?',
-    a: 'We focus on commercial facilities: retail stores, medical offices, office and multi-tenant buildings, and shared building amenities. We do not offer residential cleaning.',
+    a: 'We focus on commercial facilities: retail stores, medical offices, office and multi-tenant buildings, and shared building amenities. That includes recurring janitorial service and specialized work like windows, carpets, and power washing. We do not offer residential cleaning.',
   },
   {
     q: 'Can we request a walkthrough before getting a proposal?',
@@ -78,7 +78,7 @@ const ticker = services.map((s) => s.name);---
 
 <BaseLayout
   title="Commercial Cleaning Services Los Angeles | Quality Plus"
-  description="Quality Plus Building Services provides retail, medical office, and commercial building cleaning in Los Angeles. Request a site walkthrough."
+  description="Commercial cleaning and janitorial services for retail stores, medical offices, and buildings in Los Angeles. Request a site walkthrough with Quality Plus."
   heroOverlay
 >
   <!-- ============ Hero ============ -->
@@ -91,7 +91,7 @@ const ticker = services.map((s) => s.name);---
               photo={photos[s.key]}
               decorative
               priority={i === 0}
-              sizes="100vw"
+              sizes="(min-width: 64rem) 50vw, 100vw"
               widths={[640, 960, 1280, 1600, 2000]}
             />
           </div>
@@ -118,7 +118,12 @@ const ticker = services.map((s) => s.name);---
           <Icon name="pin" />
           <span>Based in Los Angeles · Serving businesses across Los Angeles County</span>
         </p>
-        <span class="scroll-cue" aria-hidden="true"><span></span>Scroll</span>
+        <div class="meta-end">
+          <button type="button" class="motion-toggle" aria-pressed="false" data-motion-toggle>
+            <span class="mt-icon" aria-hidden="true"></span><span>Pause motion</span>
+          </button>
+          <span class="scroll-cue" aria-hidden="true"><span></span>Scroll</span>
+        </div>
       </div>
     </div>
     <Skyline tone="light" class="hero-skyline" />
@@ -362,7 +367,7 @@ const ticker = services.map((s) => s.name);---
   @media (prefers-reduced-motion: no-preference) {
     .slide {
       animation: slide 28s linear infinite both;
-      animation-delay: calc(var(--i) * 7s - 1s);
+      animation-delay: calc(var(--i) * 7s - 2s); /* first slide (LCP) starts fully visible */
     }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -554,6 +559,50 @@ const ticker = services.map((s) => s.name);---
       display: inline-flex;
     }
   }
+  /* Pause control for the looping hero photos and ticker (WCAG 2.2.2). */
+  .meta-end {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .motion-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.25rem;
+    padding: 0.3rem 0.85rem;
+    border: 1px solid rgb(255 255 255 / 0.3);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--on-dark-muted);
+    font-size: var(--step--1);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .motion-toggle:hover {
+    color: var(--on-dark);
+    border-color: rgb(255 255 255 / 0.6);
+  }
+  .mt-icon {
+    width: 0.7rem;
+    height: 0.75rem;
+    border-inline: 3px solid currentColor;
+  }
+  .motion-toggle[aria-pressed='true'] .mt-icon {
+    border: 0;
+    border-left: 0.65rem solid currentColor;
+    border-block: 0.38rem solid transparent;
+    height: 0;
+  }
+  :global(.motion-paused) .slide,
+  :global(.motion-paused) .ticker-track {
+    animation-play-state: paused !important;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .motion-toggle {
+      display: none;
+    }
+  }
   .hero-skyline {
     position: absolute;
     left: 0;
@@ -662,6 +711,13 @@ const ticker = services.map((s) => s.name);---
   .svc-panel {
     display: grid;
     gap: 1.75rem;
+  }
+  /* Panels slide outside the dark section while pinned; their own ink background
+     keeps text contrast correct (and measurable) wherever they sit. */
+  .svc-intro,
+  .svc-panel,
+  .svc-end {
+    background: var(--ink);
   }
   .svc-media {
     display: block;
@@ -1050,6 +1106,14 @@ const ticker = services.map((s) => s.name);---
 
 <script>
   import '../scripts/motion';
+
+  // Pause / play the looping hero photos and ticker.
+  const toggle = document.querySelector<HTMLButtonElement>('[data-motion-toggle]');
+  toggle?.addEventListener('click', () => {
+    const paused = document.documentElement.classList.toggle('motion-paused');
+    // A toggle button keeps one name; aria-pressed carries the state.
+    toggle.setAttribute('aria-pressed', String(paused));
+  });
 
   // Light parallax for the inset photo (independent of GSAP; skipped for reduced motion / small screens)
   const els = [...document.querySelectorAll<HTMLElement>('[data-parallax]')];

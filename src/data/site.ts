@@ -23,6 +23,8 @@ export const site = {
   // PENDING_CLIENT_APPROVAL: set to 2006 once Karla confirms; copy updates automatically.
   foundedYear: null as number | null,
   // PENDING_CLIENT_APPROVAL: profile URLs not provided yet. Leave null to hide icons.
+  // Google Business Profile (verified listing: same name, phone and website).
+  googleBusiness: 'https://maps.google.com/?cid=8422972607425501852',
   social: {
     instagram: null as string | null,
     facebook: null as string | null,

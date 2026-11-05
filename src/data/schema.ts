@@ -37,7 +37,7 @@ export function businessSchema(base: URL) {
         }
       : {}),
     areaServed: confirmedAreas,
-    sameAs: Object.values(site.social).filter(Boolean),
+    sameAs: [site.googleBusiness, ...Object.values(site.social).filter(Boolean)],
   };
 }
 

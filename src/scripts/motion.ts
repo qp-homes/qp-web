@@ -29,8 +29,12 @@ function whenIdle(cb: () => void) {
   else setTimeout(cb, 300);
 }
 
+// Phones and tablets keep the CSS animations only: GSAP's scroll work was the
+// largest cost in mobile Lighthouse runs (main-thread layout and script time).
+const desktop = window.matchMedia('(min-width: 64rem) and (hover: hover) and (pointer: fine)');
+
 async function init() {
-  if (reduceMotion.matches) return;
+  if (reduceMotion.matches || !desktop.matches) return;
 
   const [{ gsap }, { ScrollTrigger }] = await Promise.all([import('gsap'), import('gsap/ScrollTrigger')]);
   gsap.registerPlugin(ScrollTrigger);
@@ -64,7 +68,7 @@ async function init() {
   clipReveals(gsap);
   rise3d(gsap);
   countUp(gsap);
-  textReveals(gsap);
+  textReveals(gsap, ScrollTrigger);
   if (finePointer.matches) {
     tilt(gsap);
     magnetic(gsap);
@@ -100,7 +104,7 @@ function scrubWords(gsap: G) {
     el.innerHTML = `<span class="visually-hidden">${esc(text)}</span><span aria-hidden="true">${words}</span>`;
     gsap.fromTo(
       el.querySelectorAll('.sw'),
-      { opacity: 0.18 },
+      { opacity: 0.55 }, // stays readable (≥3:1 for this large text) before it lights up
       {
         opacity: 1,
         stagger: 0.1,
@@ -245,22 +249,20 @@ function countUp(gsap: G) {
 }
 
 // Eyebrows, leads, buttons and closing lines ease up as their section arrives.
+// Movement only (never hidden with opacity), batched into one trigger set.
 // Opening heroes animate on load in CSS, so they are skipped here.
-function textReveals(gsap: G) {
+function textReveals(gsap: G, ScrollTrigger: typeof import('gsap/ScrollTrigger').ScrollTrigger) {
   const skip = '[data-hero], .page-hero, [data-reveal], [data-kinetic], [data-scrub-words]';
   const els = [
     ...document.querySelectorAll<HTMLElement>(
       'main .eyebrow, main .lead, main .btn-row, main .big-count, main .end-title, main .section .link',
     ),
   ].filter((el) => !el.closest(skip));
-  els.forEach((el) => {
-    gsap.from(el, {
-      y: 26,
-      opacity: 0,
-      duration: 1,
-      ease: 'expo.out',
-      scrollTrigger: { trigger: el, start: 'top 92%', once: true },
-    });
+  gsap.set(els, { y: 26 });
+  ScrollTrigger.batch(els, {
+    start: 'top 92%',
+    once: true,
+    onEnter: (batch) => gsap.to(batch, { y: 0, duration: 1, ease: 'expo.out', stagger: 0.06 }),
   });
 }
 

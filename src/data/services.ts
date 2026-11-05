@@ -97,7 +97,7 @@ export const services: Service[] = [
     tier: 'primary',
     name: 'Medical Office Cleaning',
     navLabel: 'Medical Office Cleaning',
-    title: 'Medical Office Cleaning Services in Los Angeles | Quality Plus',
+    title: 'Medical Office Cleaning in Los Angeles | Quality Plus',
     description:
       'Medical office cleaning in Los Angeles for reception areas, waiting rooms, offices, and restrooms. A careful, documented plan agreed with your practice.',
     h1: 'Medical Office Cleaning Services in Los Angeles',
@@ -163,14 +163,14 @@ export const services: Service[] = [
     tier: 'primary',
     name: 'Commercial Building Cleaning',
     navLabel: 'Commercial Building Cleaning',
-    title: 'Commercial Building Cleaning Services in Los Angeles | Quality Plus',
+    title: 'Commercial Building Cleaning in Los Angeles | Quality Plus',
     description:
-      'Commercial building cleaning in Los Angeles for property and facility managers: lobbies, corridors, restrooms, elevators, offices, and shared amenities.',
+      'Commercial building cleaning and janitorial services in Los Angeles for property and facility managers: lobbies, corridors, restrooms, elevators, and offices.',
     h1: 'Commercial Building Cleaning Services in Los Angeles',
     summary: 'Lobbies, corridors, elevators, and shared spaces kept to one standard, floor after floor.',
     intro: [
       'Property and facility managers need more than a clean lobby. They need a partner who keeps every shared space consistent, reports issues before tenants notice them, and responds when something changes.',
-      'We clean office buildings, multi-tenant properties, and mixed-use spaces with a plan that maps every area, assigns a frequency to each one, and keeps a supervisor accountable for the result.',
+      'We provide recurring janitorial and office cleaning for office buildings, multi-tenant properties, and mixed-use spaces with a plan that maps every area, assigns a frequency to each one, and keeps a supervisor accountable for the result.',
     ],
     facilities: [
       'Office buildings and corporate offices',
@@ -227,7 +227,7 @@ export const services: Service[] = [
     tier: 'support',
     name: 'Power Washing',
     navLabel: 'Power Washing',
-    title: 'Commercial Power Washing Services in Los Angeles | Quality Plus',
+    title: 'Commercial Power Washing in Los Angeles | Quality Plus',
     description:
       'Commercial power washing in Los Angeles for walkways, patios, courtyards, entrances, and exterior walls. Scheduled on its own or with regular cleaning.',
     h1: 'Commercial Power Washing Services in Los Angeles',
@@ -279,7 +279,7 @@ export const services: Service[] = [
     tier: 'support',
     name: 'Window Cleaning',
     navLabel: 'Window Cleaning',
-    title: 'Commercial Window Cleaning Services in Los Angeles | Quality Plus',
+    title: 'Commercial Window Cleaning in Los Angeles | Quality Plus',
     description:
       'Commercial window cleaning in Los Angeles for storefront glass, entrances, interior partitions, and reachable exterior windows. Scheduled around your hours.',
     h1: 'Commercial Window Cleaning Services in Los Angeles',
@@ -331,7 +331,7 @@ export const services: Service[] = [
     tier: 'support',
     name: 'Carpet Cleaning',
     navLabel: 'Carpet Cleaning',
-    title: 'Commercial Carpet Cleaning Services in Los Angeles | Quality Plus',
+    title: 'Commercial Carpet Cleaning in Los Angeles | Quality Plus',
     description:
       'Commercial carpet cleaning in Los Angeles for offices, waiting rooms, corridors, and retail spaces. Scheduled after hours to keep your business running.',
     h1: 'Commercial Carpet Cleaning Services in Los Angeles',

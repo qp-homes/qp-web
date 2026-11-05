@@ -528,11 +528,13 @@ const inSection = (href: string) =>
     // Border once the page scrolls
     const onScroll = () =>
       header.classList.toggle('is-scrolled', window.scrollY > 8 || header.classList.contains('menu-open'));
-    onScroll();
+    // First reads wait for the first frame so they never force a layout during page load.
+    requestAnimationFrame(onScroll);
     window.addEventListener('scroll', onScroll, { passive: true });
 
     // Step aside while reading down, return on the way up.
-    let lastY = window.scrollY;
+    let lastY = 0;
+    requestAnimationFrame(() => (lastY = window.scrollY));
     window.addEventListener(
       'scroll',
       () => {

@@ -7,6 +7,16 @@
    - orange-ink on paper ≈ 5:1          → orange text on light backgrounds
    ========================================================================== */
 
+/* Arial resized to Archivo's metrics, so text does not reflow (CLS) when the web font swaps in. */
+@font-face {
+  font-family: 'Archivo Fallback';
+  src: local('Arial');
+  size-adjust: 90%;
+  ascent-override: 97.6%;
+  descent-override: 23.3%;
+  line-gap-override: 0%;
+}
+
 :root {
   --paper: #f6f4ef;
   --paper-2: #ece8df;
@@ -27,7 +37,7 @@
   --success: #1f7a4d;
   --danger: #b42318;
 
-  --font: 'Archivo Variable', 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font: 'Archivo Variable', 'Archivo Fallback', 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   --step--1: clamp(0.84rem, 0.82rem + 0.1vw, 0.9rem);
   --step-0: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
@@ -113,10 +123,7 @@ a {
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
 }
-p,
-li {
-  text-wrap: pretty;
-}
+/* No text-wrap: pretty on p/li: on long pages it more than doubled mobile layout time. */
 h1,
 h2,
 h3,
@@ -368,6 +375,7 @@ ol[role='list'] {
   font-weight: 650;
   text-decoration: none;
   background: linear-gradient(currentColor, currentColor) 0 100% / 0 2px no-repeat;
+  min-height: 1.5rem; /* 24px target size (WCAG 2.5.8) */
   padding-bottom: 2px;
   transition: background-size 0.4s var(--ease-out);
 }

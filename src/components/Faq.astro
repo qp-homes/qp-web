@@ -8,7 +8,20 @@ interface Props {
   id?: string;
 }
 const { title = 'Commercial Cleaning Questions', eyebrow = 'FAQ', items, id = 'faq' } = Astro.props;
+
+// FAQPage markup mirrors the visible questions and answers word for word.
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
+};
 ---
+
+<script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
 
 <section class="section faq" aria-labelledby={`${id}-title`}>
   <div class="container grid">

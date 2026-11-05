@@ -102,7 +102,10 @@
   // A chapter = a section (not the page's opening hero) with an eyebrow and a heading.
   const sections = all.filter((s) => s !== first && s.querySelector('.eyebrow') && s.querySelector('h2'));
 
-  if (rail && list && sections.length >= 3) {
+  // The rail only shows on wide screens; skip all scroll work elsewhere.
+  const wide = window.matchMedia('(min-width: 92rem)').matches;
+
+  if (wide && rail && list && sections.length >= 3) {
     const links = sections.map((s, i) => {
       const h = s.querySelector('h2')!;
       if (!h.id) h.id = `section-${i + 1}`;
